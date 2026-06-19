@@ -13,14 +13,14 @@ export default function Footer() {
     <footer className="w-full bg-[#F4F6F4] border-t border-[#C4CDC4]">
       {/* Footer Container */}
       <div className="w-full max-w-[1440px] mx-auto px-6 md:px-24 pt-16 md:pt-24 pb-12 md:pb-16 flex flex-col font-sans">
-        
+
         {/* Main Content Row */}
         <div className="w-full flex flex-col lg:flex-row lg:justify-between items-start gap-12 lg:gap-8 mb-16">
-          
+
           {/* Column 1: Logo & Description */}
           <div className="w-full lg:w-[302px] flex flex-col gap-6">
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="font-sans font-semibold text-[32px] leading-[32px] tracking-[-0.02em] text-[#102110] hover:opacity-85 transition-opacity duration-200"
             >
               SafariNest
@@ -31,21 +31,21 @@ export default function Footer() {
             {/* Social Icons */}
             <div className="flex gap-3">
               {/* Share Icon Button */}
-              <button 
+              <button
                 className="w-10 h-10 rounded-full border border-[#C4CDC4] flex items-center justify-center text-[#102110] hover:bg-[#102110] hover:text-white transition-all duration-200 cursor-pointer active:scale-95"
                 aria-label="Share SafariNest"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth="2" 
-                    d="M8.684 10.742l4.636-2.531m0 5.578l-4.636-2.531m0 0a3 3 0 110-3.042m0 3.042a3 3 0 110 3.042m0-3.042a3 3 0 110-3.042M12 4a3 3 0 110 6 3 3 0 010-6zm0 10a3 3 0 110 6 3 3 0 010-6z" 
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M8.684 10.742l4.636-2.531m0 5.578l-4.636-2.531m0 0a3 3 0 110-3.042m0 3.042a3 3 0 110 3.042m0-3.042a3 3 0 110-3.042M12 4a3 3 0 110 6 3 3 0 010-6zm0 10a3 3 0 110 6 3 3 0 010-6z"
                   />
                 </svg>
               </button>
               {/* Instagram Button */}
-              <button 
+              <button
                 className="w-10 h-10 rounded-full border border-[#C4CDC4] flex items-center justify-center text-[#102110] hover:bg-[#102110] hover:text-white transition-all duration-200 cursor-pointer active:scale-95"
                 aria-label="Instagram"
               >
@@ -121,8 +121,8 @@ export default function Footer() {
               CONTACT
             </h4>
             <div className="flex flex-col gap-4 mb-6">
-              <a 
-                href="mailto:expeditions@safarinest.lk" 
+              <a
+                href="mailto:expeditions@safarinest.lk"
                 className="flex items-center gap-2 font-sans font-medium text-[16px] leading-[24px] text-[#102110] hover:text-[#7F6200] transition-colors duration-200"
               >
                 <svg className="w-5 h-5 text-[#102110] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -130,8 +130,8 @@ export default function Footer() {
                 </svg>
                 expeditions@safarinest.lk
               </a>
-              <a 
-                href="tel:+94470000000" 
+              <a
+                href="tel:+94470000000"
                 className="flex items-center gap-2 font-sans font-medium text-[16px] leading-[24px] text-[#102110] hover:text-[#7F6200] transition-colors duration-200"
               >
                 <svg className="w-5 h-5 text-[#102110] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -143,14 +143,14 @@ export default function Footer() {
 
             {/* Newsletter form */}
             <form onSubmit={handleSubmit} className="w-full h-12 flex border border-[#C4CDC4] bg-transparent focus-within:border-[#102110] transition-colors duration-200">
-              <input 
-                type="email" 
-                required 
-                placeholder="Yala Updates" 
+              <input
+                type="email"
+                required
+                placeholder="Yala Updates"
                 className="flex-1 min-w-0 bg-transparent px-4 py-2 font-sans font-normal text-[16px] text-[#102110] placeholder-[#7F6200]/70 focus:outline-none"
               />
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className="w-12 h-12 bg-[#102110] flex items-center justify-center text-white hover:bg-[#203c20] transition-colors duration-200 flex-shrink-0 cursor-pointer"
                 aria-label="Subscribe"
               >
@@ -171,14 +171,14 @@ export default function Footer() {
             © 2026 SafariNest Sri Lanka. All rights reserved.
           </div>
           <div className="flex gap-8">
-            <Link 
-              href="/privacy" 
+            <Link
+              href="/privacy"
               className="font-sans font-medium text-[12px] leading-[18px] text-[#102110] hover:text-[#7F6200] transition-colors duration-200"
             >
               Privacy Policy
             </Link>
-            <Link 
-              href="/terms" 
+            <Link
+              href="/terms"
               className="font-sans font-medium text-[12px] leading-[18px] text-[#102110] hover:text-[#7F6200] transition-colors duration-200"
             >
               Terms of Service
