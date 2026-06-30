@@ -1,7 +1,8 @@
-export default function AdminSlotsPage() {
+export default function SlotsPage() {
   return (
-    <div className="p-8">
-      <h1 className="text-xl font-bold">Manage Slots</h1>
+    <div className="min-h-screen bg-slate-50 p-8">
+      <h1 className="text-3xl font-semibold text-slate-900">Slots</h1>
+      <p className="mt-3 text-slate-600">View and manage scheduling slots.</p>
     </div>
   );
 }

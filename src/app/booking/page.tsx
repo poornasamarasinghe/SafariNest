@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { 
   Globe, 
   Calendar, 
@@ -79,8 +77,6 @@ export default function BookingPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-zinc-55">
-      <Header />
-
       {/* Main Content */}
       <main className="flex-grow pb-24">
         {/* Hero Section */}
@@ -463,8 +459,6 @@ export default function BookingPage() {
           )}
         </div>
       </main>
-
-      <Footer variant="dark" />
     </div>
   );
 }

@@ -3,8 +3,6 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import {
   Phone,
   Mail,
@@ -37,12 +35,10 @@ export default function ContactPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-zinc-50">
-      <Header />
-
       {/* Main Content */}
-      <main className="flex-grow pb-20">
+      <main className="grow pb-20">
         {/* Hero Section */}
-        <div className="relative h-[360px] w-full overflow-hidden flex items-center justify-center text-center">
+        <div className="relative h-90 w-full overflow-hidden flex items-center justify-center text-center">
           <Image
             src="/images/contact-hero.png"
             alt="Yala Savanna Sunset Landscape"
@@ -115,7 +111,7 @@ export default function ContactPage() {
               <span className="text-[9px] font-extrabold tracking-wider text-[#466673] uppercase mt-1 mb-3">
                 Yala Junction
               </span>
-              <span className="text-zinc-900 font-extrabold text-xs max-w-[200px] leading-relaxed mb-1">
+              <span className="text-zinc-900 font-extrabold text-xs max-w-50 leading-relaxed mb-1">
                 Tissamaharama Road, Palatupana, Yala, Sri Lanka
               </span>
             </div>
@@ -255,7 +251,7 @@ export default function ContactPage() {
               </div>
 
               {/* Card 2: Conservation First Card */}
-              <div className="bg-[#101b15] text-white rounded-xl p-8 flex flex-col justify-between flex-grow shadow-sm">
+              <div className="bg-[#101b15] text-white rounded-xl p-8 flex flex-col justify-between grow shadow-sm">
                 <div>
                   <h3 className="text-lg font-bold mb-4 flex items-center gap-2.5">
                     <Leaf className="text-emerald-500" size={20} />
@@ -287,7 +283,7 @@ export default function ContactPage() {
 
         {/* Map directions container */}
         <div className="max-w-7xl mx-auto px-4 md:px-8 mt-16">
-          <div className="relative h-[320px] rounded-xl overflow-hidden border border-zinc-200 shadow-sm flex items-center justify-center">
+          <div className="relative h-80 rounded-xl overflow-hidden border border-zinc-200 shadow-sm flex items-center justify-center">
             {/* Topographic map image */}
             <Image
               src="/images/topo-map.png"
@@ -317,8 +313,6 @@ export default function ContactPage() {
         </div>
 
       </main>
-
-      <Footer variant="light" />
     </div>
   );
 }
