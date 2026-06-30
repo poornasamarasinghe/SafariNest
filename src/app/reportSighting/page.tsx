@@ -51,7 +51,7 @@ export default function ReportSightingPage() {
   const [sectorName, setSectorName] = useState<string>("Block I - Palatupana");
   const [weather, setWeather] = useState<WeatherType>("sunny");
   const [fieldNotes, setFieldNotes] = useState<string>("");
-  
+
   // Evidence Upload State
   const [dragActive, setDragActive] = useState<boolean>(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
@@ -92,14 +92,14 @@ export default function ReportSightingPage() {
     const rect = mapRef.current.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
     const clickY = e.clientY - rect.top;
-    
+
     const pctX = clickX / rect.width;
     const pctY = 1 - (clickY / rect.height); // Invert Y for latitude
 
     // Compute lat/lng from percentage
     const newLng = mapBounds.minLng + pctX * (mapBounds.maxLng - mapBounds.minLng);
     const newLat = mapBounds.minLat + pctY * (mapBounds.maxLat - mapBounds.minLat);
-    
+
     updateLocation(newLat, newLng);
   };
 
@@ -136,7 +136,7 @@ export default function ReportSightingPage() {
       const randLat = 6.3700 + Math.random() * 0.04;
       const randLng = 81.4350 + Math.random() * 0.07;
       updateLocation(randLat, randLng);
-      
+
       steps++;
       if (steps >= 12) {
         clearInterval(interval);
@@ -260,8 +260,6 @@ export default function ReportSightingPage() {
 
   return (
     <div className="flex-1 bg-[#FAF9F5] text-stone-900 font-sans min-h-screen flex flex-col relative">
-      {/* Header component wrapper */}
-      <Header />
 
       {/* Hero Banner Section */}
       <section className="relative h-[400px] w-full overflow-hidden flex items-center justify-center shrink-0">
@@ -294,13 +292,13 @@ export default function ReportSightingPage() {
       {/* Main Form Dashboard Section */}
       <section className="container mx-auto px-4 md:px-16 max-w-7xl pb-24 relative z-10 -mt-16 sm:-mt-24 flex-grow">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
+
           {/* Left Column: Form Details Card */}
           <div className="lg:col-span-7 bg-white rounded-2xl shadow-xl border border-stone-200/40 p-6 md:p-8 flex flex-col gap-6 relative overflow-hidden">
-            
+
             {/* Elegant Background Accent */}
             <div className="absolute top-0 left-0 w-full h-[4px] bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700" />
-            
+
             {/* Success Telemetry Screen Overlay */}
             {isSuccess && (
               <div className="absolute inset-0 bg-white/95 z-40 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center animate-in fade-in duration-300">
@@ -342,7 +340,7 @@ export default function ReportSightingPage() {
 
             {/* Form Fields */}
             <form onSubmit={handleSubmitReport} className="flex flex-col gap-5">
-              
+
               {/* Row 1: Animal Type & Count */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {/* Animal Type Selection */}
@@ -417,9 +415,8 @@ export default function ReportSightingPage() {
                     type="button"
                     onClick={handlePinLocation}
                     disabled={isLocating}
-                    className={`h-11 px-4 border border-stone-200 rounded-xl flex items-center gap-2 hover:bg-stone-50 active:scale-[0.97] transition-all font-semibold text-xs text-stone-700 shadow-sm cursor-pointer whitespace-nowrap ${
-                      isLocating ? "bg-stone-100 text-stone-400 cursor-wait" : "bg-white"
-                    }`}
+                    className={`h-11 px-4 border border-stone-200 rounded-xl flex items-center gap-2 hover:bg-stone-50 active:scale-[0.97] transition-all font-semibold text-xs text-stone-700 shadow-sm cursor-pointer whitespace-nowrap ${isLocating ? "bg-stone-100 text-stone-400 cursor-wait" : "bg-white"
+                      }`}
                   >
                     <Compass className={`w-4 h-4 text-amber-600 ${isLocating ? "animate-spin" : ""}`} />
                     Pin Location
@@ -446,11 +443,10 @@ export default function ReportSightingPage() {
                         key={item.id}
                         type="button"
                         onClick={() => setWeather(item.id as WeatherType)}
-                        className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl border text-xs font-semibold transition-all duration-300 cursor-pointer active:scale-95 ${
-                          isActive
-                            ? "bg-[#1c261e] border-[#1c261e] text-white shadow-md font-bold scale-100"
-                            : "bg-white border-stone-200 text-stone-600 hover:bg-stone-50 hover:text-stone-900"
-                        }`}
+                        className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl border text-xs font-semibold transition-all duration-300 cursor-pointer active:scale-95 ${isActive
+                          ? "bg-[#1c261e] border-[#1c261e] text-white shadow-md font-bold scale-100"
+                          : "bg-white border-stone-200 text-stone-600 hover:bg-stone-50 hover:text-stone-900"
+                          }`}
                       >
                         <Icon className={`w-4 h-4 ${isActive ? "text-amber-500 animate-pulse" : "text-stone-400"}`} />
                         <span>{item.label}</span>
@@ -479,7 +475,7 @@ export default function ReportSightingPage() {
                 <label className="text-[10px] font-bold text-stone-400 tracking-wider uppercase">
                   Evidence Photography
                 </label>
-                
+
                 {imagePreview ? (
                   <div className="relative w-full border border-stone-200 rounded-xl bg-stone-50 p-4 flex items-center justify-between animate-in fade-in duration-200">
                     <div className="flex items-center gap-3">
@@ -515,11 +511,10 @@ export default function ReportSightingPage() {
                     onDragLeave={handleDrag}
                     onDrop={handleDrop}
                     onClick={() => fileInputRef.current?.click()}
-                    className={`w-full border-2 border-dashed rounded-xl py-8 px-4 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 ${
-                      dragActive
-                        ? "border-amber-600 bg-amber-50/30 scale-[1.01]"
-                        : "border-stone-200 bg-stone-50/50 hover:border-amber-500/50 hover:bg-stone-50"
-                    }`}
+                    className={`w-full border-2 border-dashed rounded-xl py-8 px-4 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 ${dragActive
+                      ? "border-amber-600 bg-amber-50/30 scale-[1.01]"
+                      : "border-stone-200 bg-stone-50/50 hover:border-amber-500/50 hover:bg-stone-50"
+                      }`}
                   >
                     <input
                       type="file"
@@ -555,10 +550,10 @@ export default function ReportSightingPage() {
 
           {/* Right Column: Sighting Location Map & Explanations */}
           <div className="lg:col-span-5 flex flex-col gap-6">
-            
+
             {/* Card 1: Interactive Topo Map */}
             <div className="bg-white rounded-2xl shadow-xl border border-stone-200/40 p-5 flex flex-col gap-4 relative select-none">
-              
+
               {/* Card Title & Live Badge */}
               <div className="flex items-center justify-between pb-1 border-b border-stone-100">
                 <h3 className="font-bold text-stone-900 text-sm tracking-tight flex items-center gap-2">
@@ -614,7 +609,7 @@ export default function ReportSightingPage() {
                     <path d="M 50,40 C 90,30 120,60 140,90 C 160,120 120,150 90,140 C 60,130 30,100 50,40 Z" />
                     <path d="M 60,50 C 95,42 110,65 125,90 C 140,115 110,135 90,128 C 70,120 45,95 60,50 Z" />
                     <path d="M 75,65 C 98,60 105,75 115,90 C 125,105 105,120 90,115 C 75,110 65,90 75,65 Z" />
-                    
+
                     {/* Ridge 2 (Near Coast) */}
                     <path d="M 250,90 C 290,70 330,80 340,110 C 350,140 310,160 280,150 C 250,140 220,110 250,90 Z" />
                     <path d="M 270,100 C 300,85 320,95 325,110 C 330,125 305,140 280,132 C 255,125 240,110 270,100 Z" />
@@ -631,7 +626,7 @@ export default function ReportSightingPage() {
 
                   {/* Coast Label */}
                   <text x="330" y="210" fill="rgba(255,255,255,0.25)" fontSize="8" fontWeight="bold" letterSpacing="1.5" transform="rotate(-15 330 210)">INDIAN OCEAN</text>
-                  
+
                   {/* Sectors Markers */}
                   <text x="35" y="20" fill="rgba(255,255,255,0.15)" fontSize="7" fontWeight="bold">BLOCK I - PALATUPANA</text>
                   <text x="250" y="30" fill="rgba(255,255,255,0.15)" fontSize="7" fontWeight="bold">BUTHAWA LAGOON</text>
@@ -661,7 +656,7 @@ export default function ReportSightingPage() {
                     {/* Pulse Rings */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full border border-orange-500/40 bg-orange-500/10 animate-ping" />
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full border border-orange-500/50 bg-orange-500/20" />
-                    
+
                     {/* SVG Pin Marker */}
                     <svg className="w-8 h-8 text-orange-500 drop-shadow-lg" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" stroke="white" strokeWidth="1.5" />
@@ -680,7 +675,7 @@ export default function ReportSightingPage() {
 
               {/* Map Footer Metrics */}
               <div className="grid grid-cols-2 gap-4 pt-2 divide-x divide-stone-100">
-                
+
                 {/* Sector display */}
                 <div className="flex flex-col gap-1">
                   <span className="text-[9px] font-bold text-stone-400 uppercase tracking-wide">PROBABILITY RADIUS</span>
@@ -706,7 +701,7 @@ export default function ReportSightingPage() {
             <div className="bg-[#1c261e] rounded-2xl shadow-xl border border-stone-850 p-6 md:p-8 flex flex-col gap-5 text-white relative overflow-hidden">
               {/* Background abstract texture */}
               <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none" />
-              
+
               <h3 className="font-bold text-lg tracking-tight select-none">
                 Why report sightings?
               </h3>
@@ -760,9 +755,6 @@ export default function ReportSightingPage() {
           </button>
         </div>
       )}
-
-      {/* Footer component wrapper */}
-      <Footer />
     </div>
   );
 }
