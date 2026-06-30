@@ -261,7 +261,6 @@ export default function TrackerPage() {
 
   return (
     <div className="flex-1 bg-[#FAF9F5] text-stone-900 font-sans min-h-screen flex flex-col">
-      <Header />
 
       {/* Hero Section */}
       <section className="w-full max-w-[1440px] mx-auto px-6 md:px-16 pt-12 pb-8 flex flex-col gap-4">
@@ -617,7 +616,7 @@ export default function TrackerPage() {
 
       </main>
 
-      <Footer />
+
     </div>
   );
 }
