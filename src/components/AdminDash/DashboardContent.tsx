@@ -2,9 +2,9 @@
 
 import StatsCard from "./StatsCard";
 import RecentBookings from "./RecentBookings";
-import AIAnalytics from "./AIAnalytics";
-import VerifySightings from "./VerifySightings";
-import PackageManager from "./PackageManager";
+//import AIAnalytics from "./AIAnalytics";
+//import VerifySightings from "./VerifySightings";
+//import PackageManager from "./PackageManager";
 
 export default function DashboardContent() {
   return (
@@ -41,12 +41,12 @@ export default function DashboardContent() {
           <RecentBookings />
         </div>
 
-        <AIAnalytics />
+        {/* <AIAnalytics /> */}
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <VerifySightings />
-        <PackageManager />
+        {/* <VerifySightings /> */}
+        {/* <PackageManager /> */}
       </div>
     </div>
   );
