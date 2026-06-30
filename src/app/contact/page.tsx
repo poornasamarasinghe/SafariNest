@@ -158,7 +158,7 @@ export default function ContactPage() {
         {/* Main Grid: Send a Message & Visuals (Leopard, Conservation) */}
         <div className="max-w-7xl mx-auto px-4 md:px-8 mt-16">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-            
+
             {/* Left Column: Form Card */}
             <div className="lg:col-span-7 bg-[#f6f5f4] rounded-xl border border-zinc-200/50 p-8 flex flex-col justify-between">
               <div>
@@ -269,7 +269,7 @@ export default function ContactPage() {
 
             {/* Right Column: Leopard Image & Conservation Info */}
             <div className="lg:col-span-5 flex flex-col gap-6">
-              
+
               {/* Card 1: Leopard Live Alert */}
               <div className="relative h-64 rounded-xl overflow-hidden shadow-sm group">
                 <Image
@@ -300,8 +300,8 @@ export default function ContactPage() {
                     Conservation First
                   </h3>
                   <p className="text-xs text-zinc-400 leading-relaxed font-sans font-light">
-                    Every expedition contributes directly to the Yala Wildlife Preservation Fund. 
-                    We operate with zero-impact principles to ensure future generations can witness 
+                    Every expedition contributes directly to the Yala Wildlife Preservation Fund.
+                    We operate with zero-impact principles to ensure future generations can witness
                     the same raw beauty we do today.
                   </p>
                 </div>
@@ -340,10 +340,10 @@ export default function ContactPage() {
               </div>
               <h4 className="font-extrabold text-sm text-zinc-900 font-sans">YalaWild Basecamp</h4>
               <p className="text-[10px] text-zinc-500 font-semibold mt-1">Gate 1, Palatupana</p>
-              
-              <a 
-                href="https://maps.google.com" 
-                target="_blank" 
+
+              <a
+                href="https://maps.google.com"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="mt-4 flex items-center gap-1.5 text-[10px] font-extrabold text-[#9b591b] hover:text-[#804814] uppercase tracking-wider border-t border-zinc-100 pt-3.5 w-full justify-center transition-colors cursor-pointer"
               >

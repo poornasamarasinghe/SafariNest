@@ -1,66 +1,66 @@
 "use client";
 
 import Image from "next/image";
-import { Calendar, Maximize2 } from "lucide-react";
+import {
+    Eye,
+    Pencil,
+    Trash2,
+} from "lucide-react";
 
-interface GalleryImage {
-  id: number;
-  title: string;
-  category: string;
-  image: string;
-  uploaded: string;
-}
+export default function GalleryCard({ image }: any) {
+    return (
+        <div className="bg-white rounded-xl overflow-hidden border shadow-sm hover:shadow-md transition">
 
-interface GalleryCardProps {
-  image: GalleryImage;
-  onClick: () => void;
-}
+            <Image
+                src={image.image}
+                width={500}
+                height={300}
+                alt={image.title}
+                className="w-full h-56 object-cover"
+            />
 
-export default function GalleryCard({ image, onClick }: GalleryCardProps) {
-  return (
-    <div
-      onClick={onClick}
-      className="group relative bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 flex flex-col cursor-pointer"
-    >
-      {/* Image Container */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-gray-50">
-        <Image
-          src={image.image}
-          alt={image.title}
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-          priority={image.id <= 2}
-        />
+            <div className="p-5">
 
-        {/* Hover Action Overlay */}
-        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-          <div className="p-3 bg-white text-[#1d2b22] rounded-full shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 hover:scale-110 active:scale-95">
-            <Maximize2 size={20} />
-          </div>
+                <h3 className="font-semibold text-lg">
+                    {image.title}
+                </h3>
+
+                <span className="inline-block mt-2 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs">
+                    {image.category}
+                </span>
+
+                <p className="text-sm text-gray-500 mt-4">
+                    Uploaded
+                </p>
+
+                <p className="font-medium">
+                    {image.uploaded}
+                </p>
+
+                <div className="flex justify-between mt-5">
+
+                    <button className="w-10 h-10 rounded-lg border flex items-center justify-center hover:bg-gray-100">
+                        <Eye size={18} />
+                    </button>
+
+                    <button className="w-10 h-10 rounded-lg border flex items-center justify-center hover:bg-blue-50">
+                        <Pencil
+                            size={18}
+                            className="text-blue-600"
+                        />
+                    </button>
+
+                    <button className="w-10 h-10 rounded-lg border flex items-center justify-center hover:bg-red-50">
+                        <Trash2
+                            size={18}
+                            className="text-red-600"
+                        />
+                    </button>
+
+                </div>
+
+            </div>
+
         </div>
-
-        {/* Category Tag */}
-        <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-[#1d2b22] text-[11px] font-semibold tracking-wide px-3 py-1 rounded-full shadow-sm">
-          {image.category}
-        </span>
-      </div>
-
-      {/* Content Details */}
-      <div className="p-4 flex flex-col flex-1 justify-between">
-        <div>
-          <h3 className="font-semibold text-gray-800 group-hover:text-[#1d2b22] transition-colors duration-200 line-clamp-1">
-            {image.title}
-          </h3>
-        </div>
-        
-        <div className="mt-3 pt-3 border-t border-gray-50 flex items-center text-xs text-gray-400">
-          <span className="flex items-center gap-1.5">
-            <Calendar size={14} className="text-gray-400" />
-            <span>{image.uploaded}</span>
-          </span>
-        </div>
-      </div>
-    </div>
-  );
+    );
 }
