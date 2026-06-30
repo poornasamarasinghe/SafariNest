@@ -23,14 +23,51 @@ export default function ContactPage() {
   const [subject, setSubject] = useState("Expedition Inquiry");
   const [message, setMessage] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [result, setResult] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!fullName || !email || !message) {
       alert("Please fill out all required fields.");
       return;
     }
-    setIsSubmitted(true);
+
+    setIsSubmitting(true);
+    setResult("Sending...");
+
+    try {
+      const formData = new FormData(e.currentTarget);
+      formData.append("access_key", "b347522c-fdb0-46ef-9218-a347a7932780");
+
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setResult("Success!");
+        setIsSubmitted(true);
+      } else {
+        setResult("Error");
+        alert(data.message || "Failed to send message. Please try again.");
+      }
+    } catch (err) {
+      setResult("Error");
+      alert("An error occurred. Please check your internet connection and try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleReset = () => {
+    setFullName("");
+    setEmail("");
+    setSubject("Expedition Inquiry");
+    setMessage("");
+    setResult("");
+    setIsSubmitted(false);
   };
 
   return (
@@ -139,7 +176,7 @@ export default function ContactPage() {
                       Thanks for reaching out, <strong className="text-zinc-800">{fullName}</strong>. We have received your inquiry and our travel experts will respond to you within 2 hours.
                     </p>
                     <button
-                      onClick={() => setIsSubmitted(false)}
+                      onClick={handleReset}
                       className="bg-[#101b15] hover:bg-[#1f3026] text-white font-bold px-5 py-2 rounded-full text-xs tracking-wider uppercase transition-colors duration-200"
                     >
                       New Message
@@ -154,6 +191,7 @@ export default function ContactPage() {
                         </label>
                         <input
                           type="text"
+                          name="name"
                           required
                           value={fullName}
                           onChange={(e) => setFullName(e.target.value)}
@@ -168,6 +206,7 @@ export default function ContactPage() {
                         </label>
                         <input
                           type="email"
+                          name="email"
                           required
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
@@ -183,6 +222,7 @@ export default function ContactPage() {
                       </label>
                       <div className="relative">
                         <select
+                          name="subject"
                           value={subject}
                           onChange={(e) => setSubject(e.target.value)}
                           className="bg-white border border-zinc-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-amber-500/50 focus:border-amber-500 text-zinc-800 font-medium appearance-none w-full pr-10"
@@ -204,6 +244,7 @@ export default function ContactPage() {
                         Message
                       </label>
                       <textarea
+                        name="message"
                         rows={4}
                         required
                         value={message}
@@ -215,10 +256,11 @@ export default function ContactPage() {
 
                     <button
                       type="submit"
-                      className="bg-[#101b15] hover:bg-[#1a2f24] text-white font-bold py-3.5 px-6 rounded-lg text-xs tracking-wider uppercase transition-all duration-200 cursor-pointer flex items-center justify-center gap-2"
+                      disabled={isSubmitting}
+                      className="bg-[#101b15] hover:bg-[#1a2f24] disabled:opacity-50 text-white font-bold py-3.5 px-6 rounded-lg text-xs tracking-wider uppercase transition-all duration-200 cursor-pointer flex items-center justify-center gap-2"
                     >
-                      Send Message
-                      <ArrowRight size={14} />
+                      {isSubmitting ? "Sending..." : "Send Message"}
+                      {!isSubmitting && <ArrowRight size={14} />}
                     </button>
                   </form>
                 )}

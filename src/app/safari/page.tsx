@@ -155,7 +155,7 @@ export default function SafarisPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-zinc-50 font-sans">
-      <Header />
+      
 
       {/* Main Container */}
       <main className="flex-grow">
@@ -466,7 +466,6 @@ export default function SafarisPage() {
 
       </main>
 
-      <Footer variant="light-full" />
     </div>
   );
 }
