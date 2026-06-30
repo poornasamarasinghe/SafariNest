@@ -1,0 +1,225 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+
+export default function DashboardSection() {
+  const [activeTechTab, setActiveTechTab] = useState<'density' | 'spotting'>('density');
+  const [systemTime, setSystemTime] = useState('06:14:27 LKT');
+
+  // Live ticking clock in the dashboard map overlay
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const date = new Date();
+      const timeStr = date.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+      });
+      setSystemTime(`${timeStr} LKT`);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <section className="w-full bg-[#102110] text-white py-20 md:py-28">
+      <div className="w-full max-w-[1440px] mx-auto px-6 md:px-16 lg:px-24 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
+        
+        {/* Left Column: Tech Overview */}
+        <div className="lg:col-span-5 flex flex-col">
+          <div className="inline-flex items-center mb-4">
+            <span className="font-jetbrains font-medium text-[12px] leading-[18px] tracking-[0.15em] text-[#FFB080] uppercase">
+              SafariNest Tech
+            </span>
+          </div>
+          
+          <h2 className="font-sans font-bold text-[32px] md:text-[42px] leading-[40px] md:leading-[50px] tracking-[-0.02em] text-white mb-6">
+            Yala AI Dashboard & Biometrics
+          </h2>
+          
+          <p className="font-sans font-normal text-[15px] md:text-[16px] leading-[26px] text-white/80 mb-10">
+            Our &quot;Mist&quot; interface provides a sophisticated overlay for your Sri Lankan safari. Monitor heatmaps specifically tuned for Panthera pardus kotiya and the elusive sloth bear across all five blocks.
+          </p>
+
+          {/* Interactive Accordion Toggles */}
+          <div className="flex flex-col gap-4">
+            {/* Tab 1 */}
+            <button 
+              onClick={() => setActiveTechTab('density')}
+              className={`w-full text-left p-5 rounded-xl border transition-all duration-200 cursor-pointer ${
+                activeTechTab === 'density' 
+                  ? 'border-[#FFB080] bg-white/5' 
+                  : 'border-white/10 hover:border-white/30 bg-transparent'
+              }`}
+            >
+              <div className="flex items-center gap-4 mb-2">
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${activeTechTab === 'density' ? 'bg-[#FFB080] text-[#102110]' : 'bg-white/5 text-[#FFB080]'}`}>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </div>
+                <h4 className="font-sans font-semibold text-[16px] text-white">
+                  Block-Specific Density
+                </h4>
+              </div>
+              <p className="font-sans font-normal text-[14px] leading-[20px] text-white/60 pl-12">
+                Real-time coordinates (6.21° N, 81.51° E) updated instantly for active leopard hotspots.
+              </p>
+            </button>
+
+            {/* Tab 2 */}
+            <button 
+              onClick={() => setActiveTechTab('spotting')}
+              className={`w-full text-left p-5 rounded-xl border transition-all duration-200 cursor-pointer ${
+                activeTechTab === 'spotting' 
+                  ? 'border-[#FFB080] bg-white/5' 
+                  : 'border-white/10 hover:border-white/30 bg-transparent'
+              }`}
+            >
+              <div className="flex items-center gap-4 mb-2">
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${activeTechTab === 'spotting' ? 'bg-[#FFB080] text-[#102110]' : 'bg-white/5 text-[#FFB080]'}`}>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                </div>
+                <h4 className="font-sans font-semibold text-[16px] text-white">
+                  Predictive Spotting
+                </h4>
+              </div>
+              <p className="font-sans font-normal text-[14px] leading-[20px] text-white/60 pl-12">
+                Visualizing animal proximity based on Palu fruit seasons and active waterhole level fluctuations.
+              </p>
+            </button>
+          </div>
+        </div>
+
+        {/* Right Column: AI Dashboard Map Mockup */}
+        <div className="lg:col-span-7 w-full flex flex-col">
+          <div className="w-full bg-[#182C18] border border-white/10 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
+            
+            {/* Telemetry Header */}
+            <div className="flex justify-between items-center border-b border-white/10 pb-4 mb-6">
+              <div className="flex items-center gap-3">
+                <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
+                <span className="font-jetbrains font-bold text-[11px] tracking-[0.1em] text-white/90">
+                  LIVE FEED: YALA BLOCK 1 - PATANANGALA
+                </span>
+              </div>
+              <span className="font-jetbrains font-medium text-[11px] text-white/50">
+                {systemTime}
+              </span>
+            </div>
+
+            {/* Map Layout Area */}
+            <div className="relative w-full h-[320px] bg-[#112011] rounded-xl border border-white/5 overflow-hidden flex items-center justify-center">
+              
+              {/* SVG Map Grid Layout */}
+              <svg className="absolute inset-0 w-full h-full opacity-20" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="0.5" />
+                  </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#grid)" />
+              </svg>
+
+              {/* Map abstract paths */}
+              <svg className="absolute inset-0 w-full h-full p-4" viewBox="0 0 500 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {/* Rivers / Trails */}
+                <path d="M50 220 Q 180 120 280 180 T 450 60" stroke="#FFB080" strokeWidth="1.5" strokeDasharray="4 4" opacity="0.3" />
+                <path d="M120 40 Q 220 180 320 220" stroke="#7F6200" strokeWidth="1" strokeDasharray="3 3" opacity="0.4" />
+                
+                {/* Yala block zones */}
+                <circle cx="160" cy="110" r="70" fill="#7F6200" fillOpacity="0.05" stroke="#7F6200" strokeWidth="0.5" strokeDasharray="5 5" />
+                <circle cx="340" cy="190" r="85" fill="#7F6200" fillOpacity="0.05" stroke="#7F6200" strokeWidth="0.5" strokeDasharray="5 5" />
+
+                {/* Sighting Heatmap overlay based on active tab */}
+                {activeTechTab === 'density' ? (
+                  <>
+                    {/* Leopard density heat circles */}
+                    <circle cx="210" cy="130" r="45" fill="#00FF66" fillOpacity="0.12" className="animate-pulse" />
+                    <circle cx="210" cy="130" r="25" fill="#00FF66" fillOpacity="0.18" />
+                    <circle cx="210" cy="130" r="8" fill="#00FF66" fillOpacity="0.6" />
+                    
+                    <circle cx="360" cy="120" r="30" fill="#00FF66" fillOpacity="0.08" />
+                    <circle cx="360" cy="120" r="6" fill="#00FF66" fillOpacity="0.4" />
+                  </>
+                ) : (
+                  <>
+                    {/* Predictive Spotting routes and fruit markers */}
+                    <circle cx="130" cy="200" r="40" fill="#FFB080" fillOpacity="0.08" />
+                    <circle cx="130" cy="200" r="20" fill="#FFB080" fillOpacity="0.15" />
+                    <circle cx="130" cy="200" r="6" fill="#FFB080" fillOpacity="0.5" />
+                    
+                    <circle cx="290" cy="80" r="50" fill="#FFB080" fillOpacity="0.08" />
+                    <circle cx="290" cy="80" r="8" fill="#FFB080" fillOpacity="0.5" />
+                  </>
+                )}
+              </svg>
+
+              {/* Radar Line Sweep Animation */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#FFB080]/5 to-transparent w-1/3 h-full -skew-x-12 animate-[sweep_4s_infinite_linear]" style={{ left: '-50%' }} />
+
+              {/* Map Labels / Markers */}
+              <div className="absolute top-[80px] left-[60px] flex items-center gap-2 bg-[#102110]/80 border border-white/10 px-2 py-1 rounded text-[10px] font-jetbrains">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#FFB080]" />
+                YALA JEEP ACTIVE
+              </div>
+
+              <div className="absolute bottom-[80px] right-[70px] flex flex-col items-start bg-[#102110]/95 border border-[#00FF66]/30 px-3 py-1.5 rounded-lg text-[10px] font-jetbrains shadow-lg">
+                <div className="flex items-center gap-1.5 text-[#00FF66]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#00FF66] animate-ping" />
+                  YALA LEOPARD DETECTED
+                </div>
+                <span className="text-white/50 mt-0.5 text-[9px] font-sans">COORDS: 6.2148° N, 81.5165° E</span>
+              </div>
+
+              {/* Elephant herd marker */}
+              <div className="absolute top-[40px] right-[120px] flex items-center gap-1.5 bg-[#102110]/70 border border-white/5 px-2 py-1 rounded text-[10px] font-jetbrains text-white/70">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                ELEPHANT HERD ROUTE
+              </div>
+
+            </div>
+
+            {/* Live Statistics Footnote row */}
+            <div className="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-white/10">
+              <div className="bg-[#112011] border border-white/5 p-4 rounded-xl">
+                <span className="font-jetbrains font-normal text-[11px] leading-[16px] text-white/50 block mb-1">
+                  LEOPARD SIGHTING PROB.
+                </span>
+                <span className="font-sans font-bold text-[28px] leading-[36px] text-[#00FF66]">
+                  89.7%
+                </span>
+              </div>
+              <div className="bg-[#112011] border border-white/5 p-4 rounded-xl">
+                <span className="font-jetbrains font-normal text-[11px] leading-[16px] text-white/50 block mb-1">
+                  ACTIVE YALA JEEPS
+                </span>
+                <span className="font-sans font-bold text-[28px] leading-[36px] text-white">
+                  42 Units
+                </span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      {/* Embedded radar sweep CSS styles inside layout */}
+      <style jsx global>{`
+        @keyframes sweep {
+          0% {
+            left: -50%;
+          }
+          100% {
+            left: 150%;
+          }
+        }
+      `}</style>
+    </section>
+  );
+}
