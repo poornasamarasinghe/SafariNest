@@ -65,24 +65,25 @@ export default function Home() {
 
   const packages = [
     {
+      id: 'block-1-leopard',
       image: '/images/package-leopard.png',
       block: 'YALA BLOCK 1',
       price: '$120/Session',
       title: ' HALF DAY',
       description: 'Explore the most famous leopard territory in the world with an AI-aided expert tracker and a modified luxury jeep.',
       duration: '6 Hours',
-     
+      type: 'Private 4x4 Jeep',
     },
     {
+      id: 'gentle-giants',
       image: '/images/package-elephant.png',
       block: 'ELEPHANT CORRIDOR',
       price: '$180/Full Day',
       title: 'FULL DAY',
       description: 'Follow the seasonal migration of Asian elephant herds between Yala and Lunugamvehera using satellite-linked tracking data.',
       duration: 'Full Day',
-      
+      type: 'Electric Hybrid',
     },
-    
   ];
 
   return (
@@ -115,7 +116,7 @@ export default function Home() {
       </section>
 
       {/* 3. Curated Yala Packages Section */}
-      <section className="w-full bg-[#F4F6F4] border-t border-b border-[#C4CDC4]/40 py-20 md:py-28">
+      <section id="packages" className="w-full bg-[#F4F6F4] border-t border-b border-[#C4CDC4]/40 py-20 md:py-28">
         <div className="w-full max-w-[1440px] mx-auto px-6 md:px-16 lg:px-24 flex flex-col">
           {/* Section Header */}
           <div className="w-full flex flex-col md:flex-row md:justify-between md:items-end gap-6 mb-12 md:mb-16">
@@ -141,9 +142,10 @@ export default function Home() {
           {/* Cards Grid */}
           <div className="flex flex-col md:flex-row md:flex-wrap md:justify-center gap-8">
             {packages.map((pkg, idx) => (
-              <div 
+              <Link 
                 key={idx} 
-                className="w-full md:max-w-[420px] md:flex-[0_0_calc(50%-1rem)] bg-white rounded-2xl border border-[#C4CDC4]/40 overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 flex flex-col group"
+                href={`/safaris/${pkg.id}`}
+                className="w-full md:max-w-[420px] md:flex-[0_0_calc(50%-1rem)] bg-white rounded-2xl border border-[#C4CDC4]/40 overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 flex flex-col group cursor-pointer"
               >
                 {/* Image aspect-ratio container */}
                 <div className="relative w-full h-56 overflow-hidden bg-[#102110]">
@@ -194,7 +196,7 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
