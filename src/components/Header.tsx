@@ -8,7 +8,7 @@ export default function Header() {
 
   const navLinks = [
     { label: 'Home', href: '/' },
-    { label: 'Safari', href: '/safari' },
+    { label: 'Safari', href: '/safaris' },
     { label: 'Live Tracker', href: '/tracker' },
     { label: 'Gallery', href: '/gallery' },
     { label: 'Contact', href: '/contact' },
@@ -17,11 +17,11 @@ export default function Header() {
   return (
     <header className="w-full bg-white border-b border-gray-100/50">
       <div className="w-full max-w-[1440px] h-20 mx-auto px-6 md:px-16 flex justify-between items-center relative">
-        
+
         {/* Logo */}
         <div className="w-[165px] h-[30px] flex items-center z-10">
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className="font-jetbrains font-bold text-[24px] tracking-[-0.03em] text-[#102110] hover:opacity-85 transition-opacity duration-200"
           >
             SafariNest
