@@ -2,8 +2,6 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import {
   Footprints,
   Sun,
@@ -228,8 +226,6 @@ export default function RecommendationPage() {
 
   return (
     <div className="flex-1 bg-[#FAF9F5] text-stone-900 font-sans min-h-screen flex flex-col">
-      {/* Header component wrapper */}
-      <Header />
 
       {/* Hero Section */}
       <section className="relative h-[520px] w-full overflow-hidden flex items-center shrink-0">
@@ -277,10 +273,10 @@ export default function RecommendationPage() {
         className="container mx-auto px-6 sm:px-12 lg:px-20 max-w-7xl pb-24 relative z-20 -mt-16 sm:-mt-24 flex-grow"
       >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
+
           {/* Target Parameters Card */}
           <div className="lg:col-span-4 bg-white rounded-2xl shadow-xl border border-stone-100 p-6 flex flex-col gap-6">
-            
+
             {/* Card Header */}
             <div className="flex items-center gap-3 pb-4 border-b border-stone-100">
               <div className="p-2.5 bg-amber-50 rounded-lg text-amber-700">
@@ -333,11 +329,10 @@ export default function RecommendationPage() {
                       key={item.id}
                       id={`btn-time-${item.id}`}
                       onClick={() => setTimeOfDay(item.id as TimeOfDay)}
-                      className={`flex flex-col items-center justify-center gap-1.5 py-2.5 px-2 rounded-md transition-all duration-300 cursor-pointer ${
-                        isActive
-                          ? "bg-white text-stone-900 shadow-sm font-semibold scale-100"
-                          : "text-stone-500 hover:text-stone-800 hover:bg-white/40"
-                      }`}
+                      className={`flex flex-col items-center justify-center gap-1.5 py-2.5 px-2 rounded-md transition-all duration-300 cursor-pointer ${isActive
+                        ? "bg-white text-stone-900 shadow-sm font-semibold scale-100"
+                        : "text-stone-500 hover:text-stone-800 hover:bg-white/40"
+                        }`}
                     >
                       <Icon className={`w-4 h-4 ${isActive ? "text-amber-600" : "text-stone-400"}`} />
                       <span className="text-[10px] tracking-wide uppercase font-medium">{item.label}</span>
@@ -403,11 +398,10 @@ export default function RecommendationPage() {
                 id="btn-generate-prediction"
                 disabled={isScanning}
                 onClick={handleGenerate}
-                className={`w-full flex items-center justify-center gap-2.5 py-3.5 px-4 text-sm font-bold text-white rounded-lg shadow-md cursor-pointer transition-all duration-300 active:scale-[0.98] ${
-                  isScanning
-                    ? "bg-stone-700/80 cursor-wait"
-                    : "bg-stone-900 hover:bg-stone-800 active:bg-black"
-                }`}
+                className={`w-full flex items-center justify-center gap-2.5 py-3.5 px-4 text-sm font-bold text-white rounded-lg shadow-md cursor-pointer transition-all duration-300 active:scale-[0.98] ${isScanning
+                  ? "bg-stone-700/80 cursor-wait"
+                  : "bg-stone-900 hover:bg-stone-800 active:bg-black"
+                  }`}
               >
                 <Sparkles className={`w-4 h-4 ${isScanning ? "animate-spin text-amber-400" : "text-amber-500"}`} />
                 {isScanning ? `Processing Telemetry (${scanProgress}%)` : "Generate Prediction"}
@@ -454,13 +448,12 @@ export default function RecommendationPage() {
                 <div className="flex flex-col gap-2.5 pt-3">
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-stone-400 font-medium">Animal Density</span>
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                      activePrediction.density === "High"
-                        ? "bg-red-950/80 border border-red-500/30 text-red-400"
-                        : activePrediction.density === "Medium"
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${activePrediction.density === "High"
+                      ? "bg-red-950/80 border border-red-500/30 text-red-400"
+                      : activePrediction.density === "Medium"
                         ? "bg-amber-950/80 border border-amber-500/30 text-amber-400"
                         : "bg-emerald-950/80 border border-emerald-500/30 text-emerald-400"
-                    }`}>
+                      }`}>
                       {activePrediction.density}
                     </span>
                   </div>
@@ -579,7 +572,7 @@ export default function RecommendationPage() {
                     <div className="absolute inset-12 rounded-full border border-amber-500/10" />
                     <div className="absolute inset-0 rounded-full border-r border-amber-500/60 animate-spin" style={{ animationDuration: "1.8s" }} />
                     <div className="absolute inset-0 rounded-full border-t border-amber-500/40 animate-spin" style={{ animationDuration: "2.5s" }} />
-                    
+
                     <div className="flex flex-col items-center gap-1">
                       <Sparkles className="w-6 h-6 text-amber-500 animate-pulse" />
                       <span className="text-[10px] font-bold text-stone-200 uppercase tracking-widest">Scanning Grid</span>
@@ -643,9 +636,6 @@ export default function RecommendationPage() {
           </div>
         </div>
       </section>
-
-      {/* Footer component wrapper */}
-      <Footer />
 
       {/* Styled inline keyframes for dotted route animations */}
       <style jsx global>{`

@@ -21,6 +21,7 @@ export default function Home() {
       });
       setSystemTime(`${timeStr} LKT`);
     }, 1000);
+
     return () => clearInterval(timer);
   }, []);
 
@@ -67,29 +68,21 @@ export default function Home() {
       image: '/images/package-leopard.png',
       block: 'YALA BLOCK 1',
       price: '$120/Session',
-      title: 'Leopard Prime Zone Tracker',
+      title: ' HALF DAY',
       description: 'Explore the most famous leopard territory in the world with an AI-aided expert tracker and a modified luxury jeep.',
       duration: '6 Hours',
-      type: 'Private Tour',
+     
     },
     {
       image: '/images/package-elephant.png',
       block: 'ELEPHANT CORRIDOR',
       price: '$180/Full Day',
-      title: 'Gentle Giants Expedition',
+      title: 'FULL DAY',
       description: 'Follow the seasonal migration of Asian elephant herds between Yala and Lunugamvehera using satellite-linked tracking data.',
       duration: 'Full Day',
-      type: 'Picnic Incl.',
+      
     },
-    {
-      image: '/images/package-bear.png',
-      block: 'YALA BLOCK 5',
-      price: '$95/Session',
-      title: 'Sloth Bear Hidden Trail',
-      description: 'Venture into the less-traveled Block 5 to search for the elusive Sri Lankan Sloth Bear near the Palu trees.',
-      duration: 'Morning/Eve',
-      type: 'Max 6',
-    },
+    
   ];
 
   return (
@@ -146,11 +139,11 @@ export default function Home() {
           </div>
 
           {/* Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="flex flex-col md:flex-row md:flex-wrap md:justify-center gap-8">
             {packages.map((pkg, idx) => (
               <div 
                 key={idx} 
-                className="bg-white rounded-2xl border border-[#C4CDC4]/40 overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 flex flex-col group"
+                className="w-full md:max-w-[420px] md:flex-[0_0_calc(50%-1rem)] bg-white rounded-2xl border border-[#C4CDC4]/40 overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 flex flex-col group"
               >
                 {/* Image aspect-ratio container */}
                 <div className="relative w-full h-56 overflow-hidden bg-[#102110]">
