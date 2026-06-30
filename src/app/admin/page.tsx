@@ -1,5 +1,4 @@
 import Sidebar from "../../components/AdminDash/sidebar";
-import Header from "../../components/AdminDash/Header";
 import DashboardContent from "../../components/AdminDash/DashboardContent";
 
 export default function AdminPage() {
@@ -8,8 +7,6 @@ export default function AdminPage() {
       <Sidebar />
 
       <div className="flex-1">
-        <Header />
-
         <main className="p-8 bg-slate-50">
           <DashboardContent />
         </main>
