@@ -261,7 +261,7 @@ export default function TrackerPage() {
 
   return (
     <div className="flex-1 bg-[#FAF9F5] text-stone-900 font-sans min-h-screen flex flex-col">
-      <Header />
+
 
       {/* Hero Section */}
       <section className="w-full max-w-[1440px] mx-auto px-6 md:px-16 pt-12 pb-8 flex flex-col gap-4">
@@ -322,7 +322,7 @@ export default function TrackerPage() {
 
           {/* Live Sighting Feed Card */}
           <div className="bg-[#1E2D27] rounded-2xl p-6 text-white flex flex-col flex-1 shadow-lg min-h-[460px]">
-            {/* Header */}
+
             <div className="flex items-center justify-between pb-5 border-b border-white/10 mb-4">
               <div className="flex items-center gap-2">
                 <h3 className="font-bold text-lg tracking-tight">Live Sighting Feed</h3>
@@ -352,12 +352,12 @@ export default function TrackerPage() {
                       <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
                         <Footprints
                           className={`w-4 h-4 transform rotate-12 ${sighting.animal === "Leopard"
-                              ? "text-orange-400"
-                              : sighting.animal === "Elephant"
-                                ? "text-teal-400"
-                                : sighting.animal === "Sloth Bear"
-                                  ? "text-stone-300"
-                                  : "text-amber-400"
+                            ? "text-orange-400"
+                            : sighting.animal === "Elephant"
+                              ? "text-teal-400"
+                              : sighting.animal === "Sloth Bear"
+                                ? "text-stone-300"
+                                : "text-amber-400"
                             }`}
                         />
                       </div>
@@ -492,8 +492,8 @@ export default function TrackerPage() {
                       key={type}
                       onClick={() => setAnimalFilter(type)}
                       className={`text-[10px] font-medium py-1 px-2.5 rounded-full transition duration-150 cursor-pointer ${isActive
-                          ? "bg-[#1E2D27] text-white shadow-sm"
-                          : "bg-white/80 text-stone-700 hover:bg-stone-200 border border-stone-200/40"
+                        ? "bg-[#1E2D27] text-white shadow-sm"
+                        : "bg-white/80 text-stone-700 hover:bg-stone-200 border border-stone-200/40"
                         }`}
                     >
                       {type}
@@ -552,8 +552,8 @@ export default function TrackerPage() {
                       />
                       <div
                         className={`w-3.5 h-3.5 rounded-full border border-stone-300 flex items-center justify-center transition duration-150 ${isChecked
-                            ? "border-[#8F5C1B] bg-[#FAF9F5]"
-                            : "group-hover:border-stone-400 bg-white"
+                          ? "border-[#8F5C1B] bg-[#FAF9F5]"
+                          : "group-hover:border-stone-400 bg-white"
                           }`}
                       >
                         {isChecked && <div className="w-1.5 h-1.5 rounded-full bg-[#8F5C1B]" />}
@@ -617,7 +617,7 @@ export default function TrackerPage() {
 
       </main>
 
-      <Footer />
+
     </div>
   );
 }

@@ -4,6 +4,7 @@ import "./globals.css";
 import ConditionalHeader from "@/components/ConditionalHeader";
 import Footer from "@/components/Footer";
 import RouteLoader from "@/components/RouteLoader";
+import { Suspense } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,7 +37,9 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <RouteLoader />
+        <Suspense fallback={null}>
+          <RouteLoader />
+        </Suspense>
         <ConditionalHeader />
         {children}
         <Footer />
