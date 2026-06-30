@@ -1,214 +1,191 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { Share2, Instagram, Mail, Phone, ArrowRight, Globe } from "lucide-react";
+import React from 'react';
+import Link from 'next/link';
 
-interface FooterProps {
-  variant?: "dark" | "light" | "light-full";
-}
+export default function Footer() {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Newsletter submit handler
+  };
 
-export default function Footer({ variant = "dark" }: FooterProps) {
-  if (variant === "dark") {
-    return (
-      <footer className="bg-[#0b1611] text-zinc-400 py-16 px-6 md:px-12 border-t border-[#1a2d24]">
-        <div className="max-w-7xl mx-auto">
-          {/* Main Footer Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-            {/* Column 1: Brand Info */}
-            <div className="space-y-6">
-              <Link href="/" className="text-white text-2xl font-bold font-sans tracking-tight">
-                Safari<span className="font-extrabold text-zinc-100">Nest</span>
-              </Link>
-              <p className="text-sm text-zinc-400 leading-relaxed font-sans font-light">
-                Redefining Sri Lankan wildlife expeditions through AI-driven tracking and premium jeep services in Yala National Park.
-              </p>
-              <div className="flex gap-3 pt-2">
-                <button aria-label="Share" className="w-10 h-10 rounded-full border border-zinc-700 flex items-center justify-center hover:bg-zinc-800 hover:text-white transition-colors cursor-pointer">
-                  <Share2 size={16} />
-                </button>
-                <button aria-label="Instagram" className="w-10 h-10 rounded-full border border-zinc-700 flex items-center justify-center hover:bg-zinc-800 hover:text-white transition-colors cursor-pointer">
-                  <Instagram size={16} />
-                </button>
-              </div>
-            </div>
-
-            {/* Column 2: Navigation Links */}
-            <div className="flex flex-col gap-3 justify-start pt-2 font-sans font-medium text-sm">
-              <Link href="/" className="text-zinc-300 hover:text-white transition-colors">Home</Link>
-              <Link href="/jeep-rentals" className="text-zinc-300 hover:text-white transition-colors">Jeep Rentals</Link>
-              <Link href="/leopard-tracker" className="text-zinc-300 hover:text-white transition-colors">Leopard Tracker</Link>
-              <Link href="/ai-pathing" className="text-zinc-300 hover:text-white transition-colors">AI Pathing</Link>
-            </div>
-
-            {/* Column 3: Regional Links */}
-            <div className="flex flex-col gap-3 justify-start pt-2 font-sans font-medium text-sm">
-              <span className="text-zinc-300 hover:text-white transition-colors">Block 1 (Main)</span>
-              <span className="text-zinc-300 hover:text-white transition-colors">Block 5 (Hidden)</span>
-              <span className="text-zinc-300 hover:text-white transition-colors">Kumana National Park</span>
-              <span className="text-zinc-300 hover:text-white transition-colors">Elephant Corridors</span>
-            </div>
-
-            {/* Column 4: Contact & Newsletter */}
-            <div className="space-y-4 pt-2">
-              <div className="flex items-center gap-3 text-sm text-zinc-300">
-                <Mail size={16} className="text-zinc-500" />
-                <a href="mailto:expeditions@safarinest.lk" className="hover:underline">expeditions@safarinest.lk</a>
-              </div>
-              <div className="flex items-center gap-3 text-sm text-zinc-300">
-                <Phone size={16} className="text-zinc-500" />
-                <a href="tel:+94470000000" className="hover:underline">+94 47 000 0000</a>
-              </div>
-
-              {/* Email Input */}
-              <div className="pt-2">
-                <div className="flex items-center bg-zinc-800 rounded-lg overflow-hidden max-w-xs border border-zinc-700">
-                  <input
-                    type="email"
-                    placeholder="Yala Updates"
-                    className="bg-transparent px-4 py-2 text-sm text-white focus:outline-none w-full placeholder-zinc-500"
-                  />
-                  <button aria-label="Subscribe" className="px-3 text-zinc-400 hover:text-white cursor-pointer">
-                    <ArrowRight size={16} />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom Bar */}
-          <div className="border-t border-zinc-800 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-zinc-500 gap-4">
-            <span>© 2026 Safari Nest Sri Lanka. All rights reserved.</span>
-            <div className="flex gap-6">
-              <Link href="/privacy-policy" className="hover:text-zinc-400 transition-colors">Privacy Policy</Link>
-              <Link href="/terms-of-service" className="hover:text-zinc-400 transition-colors">Terms of Service</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
-    );
-  }
-
-  if (variant === "light-full") {
-    return (
-      <footer className="bg-zinc-50 text-zinc-650 py-16 px-6 md:px-12 border-t border-zinc-200">
-        <div className="max-w-7xl mx-auto">
-          {/* Main Footer Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-            {/* Column 1: Brand Info */}
-            <div className="space-y-6">
-              <Link href="/" className="text-zinc-900 text-2xl font-bold font-sans tracking-tight">
-                Safari<span className="font-extrabold text-zinc-800">Nest</span>
-              </Link>
-              <p className="text-sm text-zinc-500 leading-relaxed font-sans font-light">
-                Redefining Sri Lankan wildlife expeditions through AI-driven tracking and premium jeep services in Yala National Park.
-              </p>
-              <div className="flex gap-3 pt-2">
-                <button aria-label="Share" className="w-10 h-10 rounded-full border border-zinc-350 flex items-center justify-center hover:bg-zinc-200 hover:text-zinc-900 transition-colors cursor-pointer text-zinc-600">
-                  <Share2 size={16} />
-                </button>
-                <button aria-label="Instagram" className="w-10 h-10 rounded-full border border-zinc-350 flex items-center justify-center hover:bg-zinc-200 hover:text-zinc-900 transition-colors cursor-pointer text-zinc-600">
-                  <Instagram size={16} />
-                </button>
-              </div>
-            </div>
-
-            {/* Column 2: Navigation Links */}
-            <div className="flex flex-col gap-3 justify-start pt-2 font-sans text-sm">
-              <h4 className="text-[10px] font-extrabold text-zinc-400 uppercase tracking-wider mb-2">Navigation</h4>
-              <Link href="/" className="text-zinc-700 hover:text-zinc-900 transition-colors font-medium">Home</Link>
-              <Link href="/jeep-rentals" className="text-zinc-700 hover:text-zinc-900 transition-colors font-medium">Jeep Rentals</Link>
-              <Link href="/leopard-tracker" className="text-zinc-700 hover:text-zinc-900 transition-colors font-medium">Leopard Tracker</Link>
-              <Link href="/ai-pathing" className="text-zinc-700 hover:text-zinc-900 transition-colors font-medium">AI Pathing</Link>
-            </div>
-
-            {/* Column 3: Regional Links */}
-            <div className="flex flex-col gap-3 justify-start pt-2 font-sans text-sm">
-              <h4 className="text-[10px] font-extrabold text-zinc-400 uppercase tracking-wider mb-2">Yala Blocks</h4>
-              <span className="text-zinc-700 hover:text-zinc-900 transition-colors font-medium cursor-pointer">Block 1 (Main)</span>
-              <span className="text-zinc-700 hover:text-zinc-900 transition-colors font-medium cursor-pointer">Block 5 (Hidden)</span>
-              <span className="text-zinc-700 hover:text-zinc-900 transition-colors font-medium cursor-pointer">Kumana National Park</span>
-              <span className="text-zinc-700 hover:text-zinc-900 transition-colors font-medium cursor-pointer">Elephant Corridors</span>
-            </div>
-
-            {/* Column 4: Contact & Newsletter */}
-            <div className="space-y-4 pt-2 font-sans text-sm">
-              <h4 className="text-[10px] font-extrabold text-zinc-400 uppercase tracking-wider mb-2">Contact</h4>
-              <div className="flex items-center gap-3 text-zinc-650">
-                <Mail size={16} className="text-zinc-400" />
-                <a href="mailto:expeditions@safarinest.lk" className="hover:underline font-medium">expeditions@safarinest.lk</a>
-              </div>
-              <div className="flex items-center gap-3 text-zinc-650">
-                <Phone size={16} className="text-zinc-400" />
-                <a href="tel:+94470000000" className="hover:underline font-medium">+94 47 000 0000</a>
-              </div>
-
-              {/* Email Input */}
-              <div className="pt-2">
-                <div className="flex items-center bg-zinc-200/50 rounded-lg overflow-hidden max-w-xs border border-zinc-200">
-                  <input
-                    type="email"
-                    placeholder="Yala Updates"
-                    className="bg-transparent px-4 py-2 text-sm text-zinc-800 focus:outline-none w-full placeholder-zinc-400 font-medium"
-                  />
-                  <button aria-label="Subscribe" className="px-3 text-zinc-600 hover:text-zinc-900 cursor-pointer">
-                    <ArrowRight size={16} />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom Bar */}
-          <div className="border-t border-zinc-200 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-zinc-400 gap-4 font-sans font-medium">
-            <span>© 2026 SafariNest Sri Lanka. All rights reserved.</span>
-            <div className="flex gap-6">
-              <Link href="/privacy-policy" className="hover:text-zinc-600 transition-colors">Privacy Policy</Link>
-              <Link href="/terms-of-service" className="hover:text-zinc-600 transition-colors">Terms of Service</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
-    );
-  }
-
-  // Light Footer for Contact Page
   return (
-    <footer className="bg-[#e4e1de] text-zinc-600 py-12 px-6 md:px-12">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 border-b border-zinc-300 pb-10 mb-8">
-          {/* Brand */}
-          <div className="max-w-sm space-y-3">
-            <Link href="/" className="text-zinc-900 text-xl font-bold font-sans tracking-tight">
-              Safari<span className="font-extrabold text-zinc-850">Nest</span>
+    <footer className="w-full bg-[#F4F6F4] border-t border-[#C4CDC4]">
+      {/* Footer Container */}
+      <div className="w-full max-w-[1440px] mx-auto px-6 md:px-24 pt-16 md:pt-24 pb-12 md:pb-16 flex flex-col font-sans">
+
+        {/* Main Content Row */}
+        <div className="w-full flex flex-col lg:flex-row lg:justify-between items-start gap-12 lg:gap-8 mb-16">
+
+          {/* Column 1: Logo & Description */}
+          <div className="w-full lg:w-[302px] flex flex-col gap-6">
+            <Link
+              href="/"
+              className="font-sans font-semibold text-[32px] leading-[32px] tracking-[-0.02em] text-[#102110] hover:opacity-85 transition-opacity duration-200"
+            >
+              SafariNest
             </Link>
-            <p className="text-xs text-zinc-500 leading-relaxed font-sans">
-              Curated expeditions into the wild heart of Sri Lanka, where luxury meets the untamed.
+            <p className="font-sans font-normal text-[16px] leading-[24px] text-[#444B43]">
+              Redefining Sri Lankan wildlife expeditions through AI-driven tracking and premium jeep services in Yala National Park.
             </p>
+            {/* Social Icons */}
+            <div className="flex gap-3">
+              {/* Share Icon Button */}
+              <button
+                className="w-10 h-10 rounded-full border border-[#C4CDC4] flex items-center justify-center text-[#102110] hover:bg-[#102110] hover:text-white transition-all duration-200 cursor-pointer active:scale-95"
+                aria-label="Share SafariNest"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M8.684 10.742l4.636-2.531m0 5.578l-4.636-2.531m0 0a3 3 0 110-3.042m0 3.042a3 3 0 110 3.042m0-3.042a3 3 0 110-3.042M12 4a3 3 0 110 6 3 3 0 010-6zm0 10a3 3 0 110 6 3 3 0 010-6z"
+                  />
+                </svg>
+              </button>
+              {/* Instagram Button */}
+              <button
+                className="w-10 h-10 rounded-full border border-[#C4CDC4] flex items-center justify-center text-[#102110] hover:bg-[#102110] hover:text-white transition-all duration-200 cursor-pointer active:scale-95"
+                aria-label="Instagram"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5" strokeWidth="2" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zM17.5 6.5h.01" />
+                </svg>
+              </button>
+            </div>
           </div>
 
-          {/* Links */}
-          <div className="flex flex-wrap gap-x-8 gap-y-3 text-xs font-semibold text-zinc-700">
-            <Link href="/terms-of-service" className="hover:text-zinc-950 transition-colors">Terms of Service</Link>
-            <Link href="/privacy-policy" className="hover:text-zinc-950 transition-colors">Privacy Policy</Link>
-            <Link href="/park-rules" className="hover:text-zinc-950 transition-colors">Park Rules</Link>
-            <Link href="/contact" className="hover:text-zinc-950 transition-colors font-bold border-b border-zinc-800 pb-0.5">Contact Us</Link>
+          {/* Column 2: Navigation */}
+          <div className="w-full lg:w-[162px] flex flex-col">
+            <h4 className="font-jetbrains font-medium text-[12px] leading-[18px] tracking-[0.1em] text-[#7F6200] mb-6">
+              NAVIGATION
+            </h4>
+            <ul className="flex flex-col gap-4">
+              <li>
+                <Link href="/" className="font-sans font-medium text-[16px] leading-[24px] text-[#102110] hover:text-[#7F6200] transition-colors duration-200">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link href="/rentals" className="font-sans font-medium text-[16px] leading-[24px] text-[#102110] hover:text-[#7F6200] transition-colors duration-200">
+                  Jeep Rentals
+                </Link>
+              </li>
+              <li>
+                <Link href="/tracker" className="font-sans font-medium text-[16px] leading-[24px] text-[#102110] hover:text-[#7F6200] transition-colors duration-200">
+                  Leopard Tracker
+                </Link>
+              </li>
+              <li>
+                <Link href="/pathing" className="font-sans font-medium text-[16px] leading-[24px] text-[#102110] hover:text-[#7F6200] transition-colors duration-200">
+                  AI Pathing
+                </Link>
+              </li>
+            </ul>
           </div>
 
-          {/* Icons */}
-          <div className="flex gap-4">
-            <button aria-label="Share" className="w-8 h-8 rounded-full border border-zinc-350 flex items-center justify-center text-zinc-600 hover:bg-zinc-200 transition-colors cursor-pointer">
-              <Share2 size={14} />
-            </button>
-            <button aria-label="Language selection" className="w-8 h-8 rounded-full border border-zinc-350 flex items-center justify-center text-zinc-600 hover:bg-zinc-200 transition-colors cursor-pointer">
-              <Globe size={14} />
-            </button>
+          {/* Column 3: Yala Blocks */}
+          <div className="w-full lg:w-[218px] flex flex-col">
+            <h4 className="font-jetbrains font-medium text-[12px] leading-[18px] tracking-[0.1em] text-[#7F6200] mb-6">
+              YALA BLOCKS
+            </h4>
+            <ul className="flex flex-col gap-4">
+              <li>
+                <Link href="/blocks/block-1" className="font-sans font-medium text-[16px] leading-[24px] text-[#102110] hover:text-[#7F6200] transition-colors duration-200">
+                  Block 1 (Main)
+                </Link>
+              </li>
+              <li>
+                <Link href="/blocks/block-5" className="font-sans font-medium text-[16px] leading-[24px] text-[#102110] hover:text-[#7F6200] transition-colors duration-200">
+                  Block 5 (Hidden)
+                </Link>
+              </li>
+              <li>
+                <Link href="/parks/kumana" className="font-sans font-medium text-[16px] leading-[24px] text-[#102110] hover:text-[#7F6200] transition-colors duration-200">
+                  Kumana National Park
+                </Link>
+              </li>
+              <li>
+                <Link href="/corridors/elephant" className="font-sans font-medium text-[16px] leading-[24px] text-[#102110] hover:text-[#7F6200] transition-colors duration-200">
+                  Elephant Corridors
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 4: Contact & Newsletter */}
+          <div className="w-full lg:w-[302px] flex flex-col">
+            <h4 className="font-jetbrains font-medium text-[12px] leading-[18px] tracking-[0.1em] text-[#7F6200] mb-6">
+              CONTACT
+            </h4>
+            <div className="flex flex-col gap-4 mb-6">
+              <a
+                href="mailto:expeditions@safarinest.lk"
+                className="flex items-center gap-2 font-sans font-medium text-[16px] leading-[24px] text-[#102110] hover:text-[#7F6200] transition-colors duration-200"
+              >
+                <svg className="w-5 h-5 text-[#102110] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                expeditions@safarinest.lk
+              </a>
+              <a
+                href="tel:+94470000000"
+                className="flex items-center gap-2 font-sans font-medium text-[16px] leading-[24px] text-[#102110] hover:text-[#7F6200] transition-colors duration-200"
+              >
+                <svg className="w-5 h-5 text-[#102110] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+                +94 47 000 0000
+              </a>
+            </div>
+
+            {/* Newsletter form */}
+            <form onSubmit={handleSubmit} className="w-full h-12 flex border border-[#C4CDC4] bg-transparent focus-within:border-[#102110] transition-colors duration-200">
+              <input
+                type="email"
+                required
+                placeholder="Yala Updates"
+                className="flex-1 min-w-0 bg-transparent px-4 py-2 font-sans font-normal text-[16px] text-[#102110] placeholder-[#7F6200]/70 focus:outline-none"
+              />
+              <button
+                type="submit"
+                className="w-12 h-12 bg-[#102110] flex items-center justify-center text-white hover:bg-[#203c20] transition-colors duration-200 flex-shrink-0 cursor-pointer"
+                aria-label="Subscribe"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </button>
+            </form>
           </div>
         </div>
 
-        {/* Bottom */}
-        <div className="flex justify-between items-center text-[10px] text-zinc-550 tracking-wide font-sans">
-          <span>© 2026 SafariNest Sri Lanka. All rights reserved.</span>
+        {/* Separator Line */}
+        <div className="w-full h-[1px] bg-[#C4CDC4] mb-8" />
+
+        {/* Copyright & Bottom Links Bar */}
+        <div className="w-full flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="font-sans font-normal text-[12px] leading-[18px] text-[#444B43]">
+            © 2026 SafariNest Sri Lanka. All rights reserved.
+          </div>
+          <div className="flex gap-8">
+            <Link
+              href="/privacy"
+              className="font-sans font-medium text-[12px] leading-[18px] text-[#102110] hover:text-[#7F6200] transition-colors duration-200"
+            >
+              Privacy Policy
+            </Link>
+            <Link
+              href="/terms"
+              className="font-sans font-medium text-[12px] leading-[18px] text-[#102110] hover:text-[#7F6200] transition-colors duration-200"
+            >
+              Terms of Service
+            </Link>
+          </div>
         </div>
+
       </div>
     </footer>
   );
