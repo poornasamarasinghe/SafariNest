@@ -156,3 +156,29 @@ export const ALL_PACKAGES: SafariPackage[] = [
 export function getPackageById(id: string): SafariPackage | undefined {
   return ALL_PACKAGES.find(pkg => pkg.id === id);
 }
+
+export function getMergedPackage(dbPkg: any): SafariPackage {
+  const fallbackId = dbPkg.id === "leopard-tracker-elite" ? "block-1-leopard" 
+                   : dbPkg.id === "gentle-giants-expedition" ? "gentle-giants"
+                   : dbPkg.id;
+  
+  const fallback = ALL_PACKAGES.find(p => p.id === fallbackId) || ALL_PACKAGES[0];
+  
+  return {
+    ...fallback,
+    id: dbPkg.id,
+    name: dbPkg.name || fallback.name,
+    price: dbPkg.price !== undefined ? Number(dbPkg.price) : fallback.price,
+    image: dbPkg.image || fallback.image,
+    descriptionTitle: dbPkg.name || fallback.descriptionTitle,
+    descriptionParagraphs: dbPkg.description 
+      ? [dbPkg.description, ...(fallback.descriptionParagraphs.slice(1))]
+      : fallback.descriptionParagraphs,
+    zone: dbPkg.zone || fallback.zone,
+    duration: dbPkg.duration || fallback.duration,
+    essentials: {
+      ...fallback.essentials,
+      duration: dbPkg.duration || fallback.essentials.duration,
+    }
+  };
+}

@@ -19,7 +19,7 @@ export default function SafariHero({ packageData }: SafariHeroProps) {
         fill
         className="object-cover object-center"
         priority
-        unoptimized={packageData.image.startsWith("http")}
+        unoptimized
       />
       
       {/* Dark gradient overlay for text readability */}

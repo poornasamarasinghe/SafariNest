@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Hero from '@/components/Hero';
@@ -63,28 +63,67 @@ export default function Home() {
     },
   ];
 
-  const packages = [
+  const [packages, setPackages] = useState<any[]>([
     {
-      id: 'block-1-leopard',
+      id: 'leopard-tracker-elite',
       image: '/images/package-leopard.png',
       block: 'YALA BLOCK 1',
-      price: '$120/Session',
-      title: ' HALF DAY',
-      description: 'Explore the most famous leopard territory in the world with an AI-aided expert tracker and a modified luxury jeep.',
-      duration: '6 Hours',
+      price: '$450/8 Hours',
+      title: 'Leopard Tracker Elite',
+      description: 'Premium leopard tracking safari through Block 1.',
+      duration: '8 Hours',
       type: 'Private 4x4 Jeep',
     },
     {
-      id: 'gentle-giants',
+      id: 'gentle-giants-expedition',
       image: '/images/package-elephant.png',
       block: 'ELEPHANT CORRIDOR',
-      price: '$180/Full Day',
-      title: 'FULL DAY',
-      description: 'Follow the seasonal migration of Asian elephant herds between Yala and Lunugamvehera using satellite-linked tracking data.',
+      price: '$680/Full Day',
+      title: 'Gentle Giants Expedition',
+      description: "Experience Sri Lanka's elephant gathering.",
       duration: 'Full Day',
       type: 'Electric Hybrid',
     },
-  ];
+  ]);
+
+  useEffect(() => {
+    const fetchPackages = async () => {
+      try {
+        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/packages`;
+        const res = await fetch(apiUrl);
+        if (res.ok) {
+          const data = await res.json();
+          const formatted = data.map((pkg: any) => {
+            const isLeopard = pkg.id === "leopard-tracker-elite";
+            const isElephant = pkg.id === "gentle-giants-expedition";
+            return {
+              id: pkg.id,
+              image: pkg.image || (isLeopard ? '/images/package-leopard.png' : isElephant ? '/images/package-elephant.png' : '/images/package-bear.png'),
+              block: pkg.zone || (isLeopard ? 'YALA BLOCK 1' : 'ELEPHANT CORRIDOR'),
+              price: `$${pkg.price}/${pkg.duration || 'Session'}`,
+              title: pkg.name || (isLeopard ? 'Leopard Tracker Elite' : 'Gentle Giants Expedition'),
+              description: pkg.description || '',
+              duration: pkg.duration || '6 Hours',
+              type: isLeopard ? 'Private 4x4 Jeep' : 'Electric Hybrid',
+            };
+          });
+          const ordered = [
+            formatted.find((p: any) => p.id === 'leopard-tracker-elite'),
+            formatted.find((p: any) => p.id === 'gentle-giants-expedition'),
+          ].filter(Boolean);
+          
+          if (ordered.length > 0) {
+            setPackages(ordered);
+          } else {
+            setPackages(formatted.slice(0, 2));
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch packages on homepage:", err);
+      }
+    };
+    fetchPackages();
+  }, []);
 
   return (
     <div className="w-full min-h-screen bg-white font-sans text-[#102110] overflow-hidden">
@@ -92,28 +131,7 @@ export default function Home() {
       <Hero />
 
       {/* 2. Features Grid Section */}
-      <section className="w-full max-w-[1440px] mx-auto px-6 md:px-16 lg:px-24 py-20 md:py-28">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
-          {features.map((feature, idx) => (
-            <div 
-              key={idx} 
-              className="flex flex-col items-start p-8 rounded-2xl border border-[#C4CDC4]/40 bg-white hover:border-[#102110] hover:-translate-y-1 hover:shadow-[0_12px_30px_-15px_rgba(16,33,16,0.15)] transition-all duration-300 group"
-            >
-              <div className="w-12 h-12 rounded-xl bg-[#F4F6F4] flex items-center justify-center mb-6 group-hover:bg-[#102110] group-hover:text-white transition-all duration-300">
-                <div className="group-hover:scale-110 transition-transform duration-300 text-[#7F6200] group-hover:text-[#FFB080]">
-                  {feature.icon}
-                </div>
-              </div>
-              <h3 className="font-sans font-semibold text-[20px] leading-[28px] text-[#102110] mb-4">
-                {feature.title}
-              </h3>
-              <p className="font-sans font-normal text-[15px] leading-[24px] text-[#444B43]">
-                {feature.description}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
+      <FeatureSection features={features} />
 
       {/* 3. Curated Yala Packages Section */}
       <section id="packages" className="w-full bg-[#F4F6F4] border-t border-b border-[#C4CDC4]/40 py-20 md:py-28">
@@ -142,21 +160,26 @@ export default function Home() {
           {/* Cards Grid */}
           <div className="flex flex-col md:flex-row md:flex-wrap md:justify-center gap-8">
             {packages.map((pkg, idx) => (
-              <Link 
-                key={idx} 
+              <Link
+                key={idx}
                 href={`/safaris/${pkg.id}`}
-                className="w-full md:max-w-[420px] md:flex-[0_0_calc(50%-1rem)] bg-white rounded-2xl border border-[#C4CDC4]/40 overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 flex flex-col group cursor-pointer"
+                className="w-full md:max-w-[420px] md:flex-[0_0_calc(50%-1rem)] bg-white rounded-2xl border border-[#C4CDC4]/40 overflow-hidden shadow-sm hover:shadow-[0_20px_50px_-20px_rgba(16,33,16,0.25)] hover:border-[#7F6200]/50 transition-all duration-300 flex flex-col group cursor-pointer hover:-translate-y-1.5"
               >
-                {/* Image aspect-ratio container */}
+                {/* Image */}
                 <div className="relative w-full h-56 overflow-hidden bg-[#102110]">
-                  <Image 
-                    src={pkg.image} 
+                  <Image
+                    src={pkg.image}
                     alt={pkg.title}
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="object-cover transition-transform duration-500 group-hover:scale-[1.06]"
+                    unoptimized
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#102110]/20 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#102110]/30 to-transparent" />
+                  {/* Price badge over image */}
+                  <div className="absolute top-4 right-4 bg-[#102110]/80 backdrop-blur-sm border border-white/10 text-white font-sans font-bold text-[13px] px-3 py-1.5 rounded-full">
+                    {pkg.price}
+                  </div>
                 </div>
 
                 {/* Content */}
@@ -165,12 +188,13 @@ export default function Home() {
                     <span className="font-jetbrains font-bold text-[11px] leading-[16px] tracking-[0.1em] text-[#7F6200]">
                       {pkg.block}
                     </span>
-                    <span className="font-sans font-bold text-[15px] leading-[20px] text-[#102110]">
-                      {pkg.price}
+                    <span className="flex items-center gap-1.5 font-jetbrains text-[10px] text-emerald-600">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      Available
                     </span>
                   </div>
 
-                  <h3 className="font-sans font-bold text-[20px] leading-[28px] text-[#102110] mb-3 group-hover:text-[#7F6200] transition-colors duration-200">
+                  <h3 className="font-sans font-bold text-[20px] leading-[28px] text-[#102110] mb-3 group-hover:text-[#5a6e00] transition-colors duration-200">
                     {pkg.title}
                   </h3>
 
@@ -180,20 +204,28 @@ export default function Home() {
 
                   <div className="w-full h-[1px] bg-[#C4CDC4]/40 mb-6" />
 
-                  {/* Meta details */}
-                  <div className="flex items-center gap-6">
-                    <div className="flex items-center gap-2 font-sans font-medium text-[12px] text-[#444B43]">
-                      <svg className="w-4 h-4 text-[#7F6200]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      {pkg.duration}
+                  {/* Meta + CTA */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-5">
+                      <div className="flex items-center gap-1.5 font-sans font-medium text-[12px] text-[#444B43]">
+                        <svg className="w-4 h-4 text-[#7F6200]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {pkg.duration}
+                      </div>
+                      <div className="flex items-center gap-1.5 font-sans font-medium text-[12px] text-[#444B43]">
+                        <svg className="w-4 h-4 text-[#7F6200]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        {pkg.type}
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2 font-sans font-medium text-[12px] text-[#444B43]">
-                      <svg className="w-4 h-4 text-[#7F6200]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    <span className="font-jetbrains text-[11px] text-[#7F6200] font-bold flex items-center gap-1 group-hover:gap-2 transition-all duration-200">
+                      View
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
                       </svg>
-                      {pkg.type}
-                    </div>
+                    </span>
                   </div>
                 </div>
               </Link>
@@ -203,7 +235,7 @@ export default function Home() {
       </section>
 
       {/* 4. Yala AI Dashboard & Biometrics Section */}
-      <section className="w-full bg-[#102110] text-white py-20 md:py-28">
+      <section className="w-full bg-[#102110] text-white py-16 md:py-28 overflow-hidden">
         <div className="w-full max-w-[1440px] mx-auto px-6 md:px-16 lg:px-24 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
           
           {/* Left Column: Tech Overview */}
@@ -293,7 +325,7 @@ export default function Home() {
               </div>
 
               {/* Map Layout Area */}
-              <div className="relative w-full h-[320px] bg-[#112011] rounded-xl border border-white/5 overflow-hidden flex items-center justify-center">
+              <div className="relative w-full h-[220px] sm:h-[280px] md:h-[320px] bg-[#112011] rounded-xl border border-white/5 overflow-hidden flex items-center justify-center">
                 
                 {/* SVG Map Grid Layout */}
                 <svg className="absolute inset-0 w-full h-full opacity-20" xmlns="http://www.w3.org/2000/svg">
@@ -343,42 +375,42 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#FFB080]/5 to-transparent w-1/3 h-full -skew-x-12 animate-[sweep_4s_infinite_linear]" style={{ left: '-50%' }} />
 
                 {/* Map Labels / Markers */}
-                <div className="absolute top-[80px] left-[60px] flex items-center gap-2 bg-[#102110]/80 border border-white/10 px-2 py-1 rounded text-[10px] font-jetbrains">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#FFB080]" />
+                <div className="absolute top-4 left-4 flex items-center gap-1.5 bg-[#102110]/80 border border-white/10 px-2 py-1 rounded text-[9px] sm:text-[10px] font-jetbrains">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#FFB080] flex-shrink-0" />
                   YALA JEEP ACTIVE
                 </div>
 
-                <div className="absolute bottom-[80px] right-[70px] flex flex-col items-start bg-[#102110]/95 border border-[#00FF66]/30 px-3 py-1.5 rounded-lg text-[10px] font-jetbrains shadow-lg">
+                <div className="absolute bottom-4 right-4 flex flex-col items-start bg-[#102110]/95 border border-[#00FF66]/30 px-2.5 py-1.5 rounded-lg text-[9px] sm:text-[10px] font-jetbrains shadow-lg max-w-[160px] sm:max-w-none">
                   <div className="flex items-center gap-1.5 text-[#00FF66]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#00FF66] animate-ping" />
-                    YALA LEOPARD DETECTED
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#00FF66] animate-ping flex-shrink-0" />
+                    LEOPARD DETECTED
                   </div>
-                  <span className="text-white/50 mt-0.5 text-[9px] font-sans">COORDS: 6.2148° N, 81.5165° E</span>
+                  <span className="text-white/50 mt-0.5 text-[8px] sm:text-[9px] font-sans hidden sm:block">COORDS: 6.2148° N, 81.5165° E</span>
                 </div>
 
                 {/* Elephant herd marker */}
-                <div className="absolute top-[40px] right-[120px] flex items-center gap-1.5 bg-[#102110]/70 border border-white/5 px-2 py-1 rounded text-[10px] font-jetbrains text-white/70">
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-                  ELEPHANT HERD ROUTE
+                <div className="absolute top-4 right-4 hidden sm:flex items-center gap-1.5 bg-[#102110]/70 border border-white/5 px-2 py-1 rounded text-[10px] font-jetbrains text-white/70">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400 flex-shrink-0" />
+                  ELEPHANT ROUTE
                 </div>
 
               </div>
 
               {/* Live Statistics Footnote row */}
-              <div className="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-white/10">
-                <div className="bg-[#112011] border border-white/5 p-4 rounded-xl">
-                  <span className="font-jetbrains font-normal text-[11px] leading-[16px] text-white/50 block mb-1">
+              <div className="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-white/10">
+                <div className="bg-[#112011] border border-white/5 p-3 md:p-4 rounded-xl">
+                  <span className="font-jetbrains font-normal text-[10px] md:text-[11px] leading-[16px] text-white/50 block mb-1">
                     LEOPARD SIGHTING PROB.
                   </span>
-                  <span className="font-sans font-bold text-[28px] leading-[36px] text-[#00FF66]">
+                  <span className="font-sans font-bold text-[22px] md:text-[28px] leading-[36px] text-[#00FF66]">
                     89.7%
                   </span>
                 </div>
-                <div className="bg-[#112011] border border-white/5 p-4 rounded-xl">
-                  <span className="font-jetbrains font-normal text-[11px] leading-[16px] text-white/50 block mb-1">
+                <div className="bg-[#112011] border border-white/5 p-3 md:p-4 rounded-xl">
+                  <span className="font-jetbrains font-normal text-[10px] md:text-[11px] leading-[16px] text-white/50 block mb-1">
                     ACTIVE YALA JEEPS
                   </span>
-                  <span className="font-sans font-bold text-[28px] leading-[36px] text-white">
+                  <span className="font-sans font-bold text-[22px] md:text-[28px] leading-[36px] text-white">
                     42 Units
                   </span>
                 </div>
@@ -388,35 +420,36 @@ export default function Home() {
           </div>
 
         </div>
-      </section>
-
-      {/* 5. Yala Expedition Journals (Testimonial) Section */}
+      </section>      {/* 5. Yala Expedition Journals (Testimonial) Section */}
       <section className="w-full max-w-[1440px] mx-auto px-6 md:px-16 lg:px-24 py-24 md:py-32 flex flex-col items-center text-center">
-        <h2 className="font-jetbrains font-semibold text-[12px] leading-[18px] tracking-[0.15em] text-[#7F6200] mb-8 uppercase">
+        <span className="font-jetbrains font-semibold text-[12px] leading-[18px] tracking-[0.15em] text-[#7F6200] mb-8 uppercase">
           Yala Expedition Journals
-        </h2>
-        
-        {/* Giant quotation mark icon */}
-        <div className="text-[#FFB080] font-jetbrains font-bold text-[96px] leading-[0px] h-[30px] select-none">
-          “
+        </span>
+
+        {/* Stars */}
+        <div className="flex gap-1 mb-6">
+          {[1,2,3,4,5].map((s) => (
+            <svg key={s} className="w-5 h-5 text-[#FFB080]" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+            </svg>
+          ))}
         </div>
 
-        <p className="max-w-[820px] font-sans font-semibold text-[22px] md:text-[32px] leading-[32px] md:leading-[44px] tracking-[-0.02em] text-[#102110] mb-10">
+        {/* Quote mark */}
+        <div className="text-[#FFB080] font-jetbrains font-bold text-[80px] leading-[0px] h-[28px] select-none mb-4">&ldquo;</div>
+
+        <p className="max-w-[820px] font-sans font-semibold text-[22px] md:text-[30px] leading-[32px] md:leading-[42px] tracking-[-0.02em] text-[#102110] mb-10">
           The SafariNest tracker was incredible. We were the only jeep at a Sloth Bear sighting because the AI predicted its movement towards the Palu trees. A truly exclusive Sri Lankan safari experience.
         </p>
 
-        {/* Profile Card */}
+        {/* Profile */}
         <div className="flex items-center gap-4 text-left">
-          <div className="w-12 h-12 rounded-full bg-[#102110] border border-[#C4CDC4] flex items-center justify-center text-white font-sans font-bold text-[18px]">
+          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#102110] to-[#2d5016] border border-[#C4CDC4] flex items-center justify-center text-white font-sans font-bold text-[17px] shadow-md">
             MR
           </div>
           <div className="flex flex-col">
-            <span className="font-sans font-bold text-[16px] leading-[22px] text-[#102110]">
-              Mark Richardson
-            </span>
-            <span className="font-sans font-normal text-[13px] leading-[18px] text-[#444B43]">
-              Wildlife Photographer, 2026
-            </span>
+            <span className="font-sans font-bold text-[16px] leading-[22px] text-[#102110]">Mark Richardson</span>
+            <span className="font-sans font-normal text-[13px] leading-[18px] text-[#444B43]">Wildlife Photographer, 2026</span>
           </div>
         </div>
       </section>
@@ -425,7 +458,7 @@ export default function Home() {
       <section className="w-full max-w-[1440px] mx-auto px-6 md:px-16 lg:px-24 pb-20 md:pb-28">
         <div className="relative w-full rounded-3xl bg-[#102110] overflow-hidden py-16 md:py-24 px-6 md:px-16 flex flex-col items-center text-center shadow-xl">
           {/* Subtle background image overlay */}
-          <div 
+          <div
             className="absolute inset-0 bg-cover bg-center opacity-15 mix-blend-overlay pointer-events-none"
             style={{ backgroundImage: "url('/images/hero-leopard.png')" }}
           />
@@ -436,7 +469,7 @@ export default function Home() {
             <h2 className="font-sans font-bold text-[32px] md:text-[48px] leading-[40px] md:leading-[56px] tracking-[-0.03em] text-white mb-6">
               Ready for the Sri Lankan Wild?
             </h2>
-            
+
             <p className="font-sans font-normal text-[15px] md:text-[16px] leading-[24px] md:leading-[26px] text-white/80 mb-10">
               Yala&apos;s leopards are waiting. Our AI booking assistant will help you select the best park entry times and jeep type for your visit this season.
             </p>
@@ -445,13 +478,13 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
               <Link
                 href="/book"
-                className="h-12 px-8 bg-[#FFB080] hover:bg-[#ffa066] text-[#7F6200] font-sans font-semibold text-[15px] rounded-full flex items-center justify-center transition-all duration-200 shadow-md active:scale-95 text-center"
+                className="h-12 px-8 bg-[#FFB080] hover:bg-[#ffa066] text-[#7F6200] font-sans font-semibold text-[15px] rounded-full flex items-center justify-center transition-all duration-200 shadow-md hover:shadow-[0_8px_24px_-8px_rgba(255,176,128,0.6)] active:scale-95 text-center"
               >
                 Book Your Yala Jeep
               </Link>
               <Link
                 href="/guide.pdf"
-                className="h-12 px-8 border border-white/20 hover:border-white/50 text-white hover:bg-white/5 font-sans font-medium text-[15px] rounded-full flex items-center justify-center transition-all duration-200 active:scale-95 text-center"
+                className="h-12 px-8 border border-white/20 hover:border-white/50 text-white hover:bg-white/8 font-sans font-medium text-[15px] rounded-full flex items-center justify-center transition-all duration-200 active:scale-95 text-center"
               >
                 Download Yala Guide (PDF)
               </Link>
@@ -459,18 +492,60 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* Embedded radar sweep CSS styles inside layout */}
-      <style jsx global>{`
-        @keyframes sweep {
-          0% {
-            left: -50%;
-          }
-          100% {
-            left: 150%;
-          }
-        }
-      `}</style>
     </div>
+  );
+}
+
+/* ── Scroll-reveal sub-components ──────────────────────────── */
+
+function FeatureSection({ features }: { features: any[] }) {
+  const ref = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const cards = el.querySelectorAll('.feature-card');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            (entry.target as HTMLElement).style.opacity = '1';
+            (entry.target as HTMLElement).style.transform = 'translateY(0)';
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+    cards.forEach((card) => observer.observe(card));
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <section ref={ref} className="w-full max-w-[1440px] mx-auto px-6 md:px-16 lg:px-24 py-20 md:py-28">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+        {features.map((feature, idx) => (
+          <div
+            key={idx}
+            className="feature-card flex flex-col items-start p-8 rounded-2xl border border-[#C4CDC4]/40 bg-white hover:border-[#102110] hover:-translate-y-1.5 hover:shadow-[0_16px_40px_-16px_rgba(16,33,16,0.18)] transition-all duration-300 group"
+            style={{
+              opacity: 0,
+              transform: 'translateY(28px)',
+              transition: `opacity 0.65s cubic-bezier(0.22,1,0.36,1) ${idx * 0.12}s, transform 0.65s cubic-bezier(0.22,1,0.36,1) ${idx * 0.12}s, box-shadow 0.3s, border-color 0.3s`,
+            }}
+          >
+            <div className="w-12 h-12 rounded-xl bg-[#F4F6F4] flex items-center justify-center mb-6 group-hover:bg-[#102110] transition-all duration-300">
+              <div className="transition-transform duration-300 group-hover:scale-110 text-[#7F6200] group-hover:text-[#FFB080]">
+                {feature.icon}
+              </div>
+            </div>
+            <h3 className="font-sans font-semibold text-[20px] leading-[28px] text-[#102110] mb-4">
+              {feature.title}
+            </h3>
+            <p className="font-sans font-normal text-[15px] leading-[24px] text-[#444B43]">
+              {feature.description}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }

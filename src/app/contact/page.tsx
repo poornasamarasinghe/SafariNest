@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { CheckCircle, Compass, ArrowRight } from "lucide-react";
 import ContactHero from "@/components/contact/ContactHero";
 import ContactCards from "@/components/contact/ContactCards";
 import ContactForm from "@/components/contact/ContactForm";
@@ -74,7 +75,7 @@ export default function ContactPage() {
         {/* Main Grid: Send a Message & Visuals (Leopard, Conservation) */}
         <div className="max-w-7xl mx-auto px-4 md:px-8 mt-16">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-            
+
             {/* Left Column: Form Card */}
             <div className="lg:col-span-7 bg-[#f6f5f4] rounded-xl border border-zinc-200/50 p-8 flex flex-col justify-between">
               <div>

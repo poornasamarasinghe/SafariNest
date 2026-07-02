@@ -1,18 +1,29 @@
 // components/gallery/GalleryStats.tsx
+"use client";
 
-export default function GalleryStats() {
+import { GalleryImage } from "../../app/admin/gallery/page";
+
+interface GalleryStatsProps {
+  images: GalleryImage[];
+}
+
+export default function GalleryStats({ images = [] }: GalleryStatsProps) {
+  const wildlifeCount = images.filter((img) => img.category === "Wildlife").length;
+  // Estimate size: assume average 1.5MB per image
+  const storageMB = (images.length * 1.5).toFixed(1);
+
   const cards = [
     {
       title: "Total Media Assets",
-      value: "1,284",
+      value: images.length.toString(),
     },
     {
-      title: "Storage Used",
-      value: "42.8 GB",
+      title: "Est. Storage Used",
+      value: `${storageMB} MB`,
     },
     {
-      title: "Pending Review",
-      value: "12",
+      title: "Wildlife Captures",
+      value: wildlifeCount.toString(),
     },
   ];
 
@@ -23,15 +34,15 @@ export default function GalleryStats() {
           key={card.title}
           className="bg-white rounded-xl border p-5 shadow-sm"
         >
-          <p className="text-xs text-slate-500 uppercase">
+          <p className="text-xs text-slate-500 uppercase font-semibold tracking-wider">
             {card.title}
           </p>
 
-          <h3 className="text-3xl font-bold mt-2">
+          <h3 className="text-3xl font-bold mt-2 text-slate-800">
             {card.value}
           </h3>
         </div>
       ))}
     </div>
   );
-}
+}
