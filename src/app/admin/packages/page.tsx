@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Sidebar from "../../../components/AdminDash/sidebar";
+import AdminShell from "../../../components/AdminDash/AdminShell";
 import PackageCard from "@/components/packages/PackageCard";
 
 export default function PackagePage() {
@@ -13,9 +13,7 @@ export default function PackagePage() {
     try {
       const apiUrl = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/packages`;
       const res = await fetch(apiUrl);
-      if (!res.ok) {
-        throw new Error("Failed to fetch packages from server");
-      }
+      if (!res.ok) throw new Error("Failed to fetch packages from server");
       const data = await res.json();
       setPackages(data);
     } catch (err: any) {
@@ -25,41 +23,35 @@ export default function PackagePage() {
     }
   };
 
-  useEffect(() => {
-    fetchPackages();
-  }, []);
+  useEffect(() => { fetchPackages(); }, []);
 
   return (
-    <div className="min-h-screen bg-[#f7f7f5] flex font-sans">
-      <Sidebar />
-
-      <main className="flex-1 p-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-[#102110]">Package Management</h1>
-
-          <p className="text-gray-500 mt-2 font-medium">
-            Edit safari packages available for visitors.
-          </p>
+    <AdminShell
+      title="Package Management"
+      subtitle="Edit and manage safari packages available for visitors."
+    >
+      {loading ? (
+        <div className="flex flex-col items-center justify-center py-20">
+          <div className="w-10 h-10 rounded-full border-2 border-[#102110]/20 border-t-[#102110] animate-spin mb-4" />
+          <p className="font-sans text-[14px] text-[#444B43]">Loading packages…</p>
         </div>
-
-        {loading ? (
-          <div className="flex flex-col items-center justify-center py-20 text-gray-500 bg-white border border-gray-100 rounded-2xl shadow-sm">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-green-700 mb-4"></div>
-            <p className="font-semibold text-green-800">Loading packages...</p>
+      ) : error ? (
+        <div className="flex flex-col items-center justify-center py-16 text-center max-w-md mx-auto">
+          <div className="w-12 h-12 rounded-2xl bg-red-50 border border-red-100 flex items-center justify-center mb-4">
+            <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
           </div>
-        ) : error ? (
-          <div className="text-center py-16 bg-white border border-red-100 rounded-2xl shadow-sm max-w-lg mx-auto">
-            <p className="text-red-500 font-bold text-lg">Error Loading Packages</p>
-            <p className="text-gray-500 text-sm mt-1 font-medium">{error}</p>
-          </div>
-        ) : (
-          <div className="space-y-8">
-            {packages.map((item) => (
-              <PackageCard key={item.id} data={item} onRefresh={fetchPackages} />
-            ))}
-          </div>
-        )}
-      </main>
-    </div>
+          <p className="font-sans font-semibold text-red-500 mb-1">Error Loading Packages</p>
+          <p className="font-sans text-[13px] text-[#444B43]">{error}</p>
+        </div>
+      ) : (
+        <div className="space-y-6">
+          {packages.map((item) => (
+            <PackageCard key={item.id} data={item} onRefresh={fetchPackages} />
+          ))}
+        </div>
+      )}
+    </AdminShell>
   );
-}
+}
