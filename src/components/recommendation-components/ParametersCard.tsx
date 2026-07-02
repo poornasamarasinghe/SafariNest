@@ -64,9 +64,11 @@ export default function ParametersCard({
             onChange={(e) => setAnimal(e.target.value as AnimalType)}
             className="w-full pl-10 pr-4 py-3 bg-stone-50 border border-stone-200 rounded-lg text-stone-800 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 appearance-none cursor-pointer hover:bg-stone-100/50 transition-colors"
           >
-            <option value="leopard">Leopard (Panthera pardus kotiya)</option>
-            <option value="elephant">Sri Lankan Elephant (Elephas maximus)</option>
-            <option value="sloth_bear">Sloth Bear (Melursus ursinus)</option>
+            <option value="leopard">Leopard</option>
+            <option value="elephant">Elephant</option>
+            <option value="sloth_bear">Sloth Bear </option>
+            <option value="deer">Deer </option>
+            <option value="peacock">Peacock </option>
           </select>
           <div className="absolute left-3.5 top-3.5 text-stone-400 pointer-events-none">
             <Footprints className="w-4 h-4" />
