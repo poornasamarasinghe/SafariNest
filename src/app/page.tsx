@@ -63,28 +63,67 @@ export default function Home() {
     },
   ];
 
-  const packages = [
+  const [packages, setPackages] = useState<any[]>([
     {
-      id: 'block-1-leopard',
+      id: 'leopard-tracker-elite',
       image: '/images/package-leopard.png',
       block: 'YALA BLOCK 1',
-      price: '$120/Session',
-      title: ' HALF DAY',
-      description: 'Explore the most famous leopard territory in the world with an AI-aided expert tracker and a modified luxury jeep.',
-      duration: '6 Hours',
+      price: '$450/8 Hours',
+      title: 'Leopard Tracker Elite',
+      description: 'Premium leopard tracking safari through Block 1.',
+      duration: '8 Hours',
       type: 'Private 4x4 Jeep',
     },
     {
-      id: 'gentle-giants',
+      id: 'gentle-giants-expedition',
       image: '/images/package-elephant.png',
       block: 'ELEPHANT CORRIDOR',
-      price: '$180/Full Day',
-      title: 'FULL DAY',
-      description: 'Follow the seasonal migration of Asian elephant herds between Yala and Lunugamvehera using satellite-linked tracking data.',
+      price: '$680/Full Day',
+      title: 'Gentle Giants Expedition',
+      description: "Experience Sri Lanka's elephant gathering.",
       duration: 'Full Day',
       type: 'Electric Hybrid',
     },
-  ];
+  ]);
+
+  useEffect(() => {
+    const fetchPackages = async () => {
+      try {
+        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/packages`;
+        const res = await fetch(apiUrl);
+        if (res.ok) {
+          const data = await res.json();
+          const formatted = data.map((pkg: any) => {
+            const isLeopard = pkg.id === "leopard-tracker-elite";
+            const isElephant = pkg.id === "gentle-giants-expedition";
+            return {
+              id: pkg.id,
+              image: pkg.image || (isLeopard ? '/images/package-leopard.png' : isElephant ? '/images/package-elephant.png' : '/images/package-bear.png'),
+              block: pkg.zone || (isLeopard ? 'YALA BLOCK 1' : 'ELEPHANT CORRIDOR'),
+              price: `$${pkg.price}/${pkg.duration || 'Session'}`,
+              title: pkg.name || (isLeopard ? 'Leopard Tracker Elite' : 'Gentle Giants Expedition'),
+              description: pkg.description || '',
+              duration: pkg.duration || '6 Hours',
+              type: isLeopard ? 'Private 4x4 Jeep' : 'Electric Hybrid',
+            };
+          });
+          const ordered = [
+            formatted.find((p: any) => p.id === 'leopard-tracker-elite'),
+            formatted.find((p: any) => p.id === 'gentle-giants-expedition'),
+          ].filter(Boolean);
+          
+          if (ordered.length > 0) {
+            setPackages(ordered);
+          } else {
+            setPackages(formatted.slice(0, 2));
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch packages on homepage:", err);
+      }
+    };
+    fetchPackages();
+  }, []);
 
   return (
     <div className="w-full min-h-screen bg-white font-sans text-[#102110] overflow-hidden">
@@ -155,6 +194,7 @@ export default function Home() {
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    unoptimized
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#102110]/20 to-transparent" />
                 </div>

@@ -3,6 +3,7 @@
 import { CheckCircle } from "lucide-react";
 
 interface BookingConfirmationProps {
+  bookingId?: string;
   fullName: string;
   email: string;
   packageName: string;
@@ -16,6 +17,7 @@ interface BookingConfirmationProps {
 }
 
 export default function BookingConfirmation({
+  bookingId,
   fullName,
   email,
   packageName,
@@ -37,8 +39,9 @@ export default function BookingConfirmation({
         Thank you for reserving your safari, <strong className="text-zinc-800">{fullName}</strong>. A confirmation email has been sent to <span className="text-[#915720] font-medium">{email}</span>. Our guides will reach out soon.
       </p>
       <div className="bg-[#0b1611] text-zinc-300 p-5 rounded-xl text-left text-xs mb-6 space-y-2">
+        {bookingId && <p><strong>Booking ID:</strong> <span className="text-amber-500 font-bold">{bookingId}</span></p>}
         <p><strong>Package:</strong> {packageName}</p>
-        <p><strong>Date & Time:</strong> {formatDate(date)} @ {selectedSlot} AM</p>
+        <p><strong>Date & Time:</strong> {formatDate(date)} @ {selectedSlot}</p>
         <p><strong>Guests:</strong> {adults} Adults, {childrenCount} Children</p>
         <p><strong>Amount Paid:</strong> ${totalAmount.toFixed(2)}</p>
       </div>

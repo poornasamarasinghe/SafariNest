@@ -18,60 +18,30 @@ interface GalleryGridProps {
   selectedCategory: string;
 }
 
-const images: GalleryImage[] = [
-  {
-    id: 1,
-    title: "Leopard Resting",
-    category: "Wildlife",
-    image: "/images/leopard-sighting.png",
-    uploaded: "24 Jun 2026",
-  },
-  {
-    id: 2,
-    title: "Elephant Herd",
-    category: "Wildlife",
-    image: "/images/package-elephant.png",
-    uploaded: "25 Jun 2026",
-  },
-  {
-    id: 3,
-    title: "Sloth Bear in Nature",
-    category: "Wildlife",
-    image: "/images/package-bear.png",
-    uploaded: "27 Jun 2026",
-  },
-  {
-    id: 4,
-    title: "King of the Wilderness",
-    category: "Wildlife",
-    image: "/images/hero-leopard.png",
-    uploaded: "28 Jun 2026",
-  },
-  {
-    id: 5,
-    title: "Leopard on Patrol",
-    category: "Wildlife",
-    image: "/images/package-leopard.png",
-    uploaded: "29 Jun 2026",
-  },
-  {
-    id: 6,
-    title: "Scenic Safari Nest Base",
-    category: "Landscapes",
-    image: "/images/booking-hero.png",
-    uploaded: "30 Jun 2026",
-  },
-  {
-    id: 7,
-    title: "Wilderness Horizon",
-    category: "Landscapes",
-    image: "/images/contact-hero.png",
-    uploaded: "01 Jul 2026",
-  }
-];
-
 export default function GalleryGrid({ searchQuery, selectedCategory }: GalleryGridProps) {
+  const [images, setImages] = useState<GalleryImage[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/gallery`;
+        const res = await fetch(apiUrl);
+        if (!res.ok) {
+          throw new Error("Failed to fetch gallery images");
+        }
+        const data = await res.json();
+        setImages(data);
+      } catch (err: any) {
+        setError(err.message || "Something went wrong");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchImages();
+  }, []);
 
   // Filter images based on search query and category
   const filteredImages = images.filter((img) => {
@@ -114,7 +84,26 @@ export default function GalleryGrid({ searchQuery, selectedCategory }: GalleryGr
 
   const activeImage = selectedImageIndex !== null ? filteredImages[selectedImageIndex] : null;
 
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-gray-500">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#102110] mb-4"></div>
+        <p className="font-medium text-[#102110]">Loading gallery...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-16 bg-white border border-red-100 rounded-2xl shadow-sm max-w-lg mx-auto">
+        <p className="text-red-500 font-medium text-lg">Error Loading Gallery</p>
+        <p className="text-gray-500 text-sm mt-1">{error}</p>
+      </div>
+    );
+  }
+
   return (
+
     <div className="space-y-6">
       {/* Gallery Grid */}
       {filteredImages.length > 0 ? (
@@ -141,14 +130,7 @@ export default function GalleryGrid({ searchQuery, selectedCategory }: GalleryGr
           onClick={() => setSelectedImageIndex(null)}
         >
           {/* Lightbox Header */}
-          <div className="w-full max-w-[1440px] flex justify-between items-center py-2 text-white z-10">
-            <div>
-              <span className="text-[11px] uppercase tracking-widest font-semibold text-gray-400 bg-white/10 px-3 py-1 rounded-full">
-                {activeImage.category}
-              </span>
-              <h2 className="text-xl font-bold mt-2 tracking-tight">{activeImage.title}</h2>
-            </div>
-            
+          <div className="w-full max-w-[1440px] flex justify-end items-center py-2 text-white z-10">
             <button
               onClick={() => setSelectedImageIndex(null)}
               className="p-3 hover:bg-white/10 rounded-full transition-colors text-gray-300 hover:text-white"
@@ -184,6 +166,7 @@ export default function GalleryGrid({ searchQuery, selectedCategory }: GalleryGr
                 className="object-contain transition-transform duration-300 scale-98"
                 sizes="(max-width: 1440px) 100vw, 1440px"
                 priority
+                unoptimized
               />
             </div>
 
@@ -201,8 +184,7 @@ export default function GalleryGrid({ searchQuery, selectedCategory }: GalleryGr
           </div>
 
           {/* Lightbox Footer */}
-          <div className="w-full max-w-[1440px] flex justify-between items-center py-4 border-t border-white/10 text-gray-400 text-xs z-10">
-            <span>Captured & Uploaded: {activeImage.uploaded}</span>
+          <div className="w-full max-w-[1440px] flex justify-end items-center py-4 border-t border-white/10 text-gray-400 text-xs z-10">
             <span className="font-mono text-sm tracking-widest text-white">
               {selectedImageIndex + 1} / {filteredImages.length}
             </span>

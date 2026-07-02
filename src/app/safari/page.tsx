@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
@@ -45,7 +45,7 @@ function FeatureIcon({ name, className }: { name: string; className?: string }) 
 // Packages Data
 const ALL_PACKAGES = [
   {
-    id: "block-1-leopard",
+    id: "leopard-tracker-elite",
     name: "Block 1 Leopard Prime Tracker",
     image: "/images/package-leopard.png",
     sightingChance: "85% Sighting Chance",
@@ -61,7 +61,7 @@ const ALL_PACKAGES = [
     bookingPackageId: "dawn-predator"
   },
   {
-    id: "gentle-giants",
+    id: "gentle-giants-expedition",
     name: "Gentle Giants Expedition",
     image: "https://images.unsplash.com/photo-1549488344-1f9b8d2bd1f3?auto=format&fit=crop&w=800&q=80",
     sightingChance: null,
@@ -121,13 +121,47 @@ export default function SafarisPage() {
   const [selectedAnimal, setSelectedAnimal] = useState("Any Sighting");
   const [selectedDuration, setSelectedDuration] = useState("Morning");
   
+  const [packages, setPackages] = useState<any[]>(ALL_PACKAGES);
   // Active Filtered Packages list
   const [filteredPackages, setFilteredPackages] = useState(ALL_PACKAGES);
   const [hasSearched, setHasSearched] = useState(false);
 
+  useEffect(() => {
+    const fetchPackages = async () => {
+      try {
+        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/packages`;
+        const res = await fetch(apiUrl);
+        if (res.ok) {
+          const dbData = await res.json();
+          const merged = dbData.map((dbPkg: any) => {
+            const fallbackId = dbPkg.id === "leopard-tracker-elite" ? "leopard-tracker-elite"
+                             : dbPkg.id === "gentle-giants-expedition" ? "gentle-giants-expedition"
+                             : dbPkg.id;
+            const fallback = ALL_PACKAGES.find(p => p.id === fallbackId) || ALL_PACKAGES[0];
+            return {
+              ...fallback,
+              id: dbPkg.id,
+              name: dbPkg.name || fallback.name,
+              price: dbPkg.price !== undefined ? Number(dbPkg.price) : fallback.price,
+              image: dbPkg.image || fallback.image,
+              zone: dbPkg.zone || fallback.zone,
+              duration: dbPkg.duration || fallback.duration,
+              description: dbPkg.description || fallback.name,
+            };
+          });
+          setPackages(merged);
+          setFilteredPackages(merged);
+        }
+      } catch (err) {
+        console.error("Failed to load dynamic packages:", err);
+      }
+    };
+    fetchPackages();
+  }, []);
+
   // Search filter trigger
   const handleSearch = () => {
-    let result = ALL_PACKAGES;
+    let result = packages;
 
     if (selectedZone !== "All Blocks") {
       result = result.filter(pkg => pkg.zone === selectedZone);
@@ -149,7 +183,7 @@ export default function SafarisPage() {
     setSelectedZone("All Blocks");
     setSelectedAnimal("Any Sighting");
     setSelectedDuration("Morning");
-    setFilteredPackages(ALL_PACKAGES);
+    setFilteredPackages(packages);
     setHasSearched(false);
   };
 
@@ -314,7 +348,7 @@ export default function SafarisPage() {
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-700"
                         sizes="(max-w-758px) 100vw, 33vw"
-                        unoptimized={pkg.image.startsWith("http")}
+                        unoptimized
                       />
                       
                       {/* Sighting Chance Overlay Badge */}

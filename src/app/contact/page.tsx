@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { CheckCircle, Compass, ArrowRight } from "lucide-react";
 import ContactHero from "@/components/contact/ContactHero";
 import ContactCards from "@/components/contact/ContactCards";
 import ContactForm from "@/components/contact/ContactForm";

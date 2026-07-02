@@ -8,7 +8,6 @@ export default function Header() {
 
   const navLinks = [
     { label: 'Home', href: '/' },
-    { label: 'Safari', href: '/safaris' },
     { label: 'Live Tracker', href: '/tracker' },
     { label: 'Gallery', href: '/gallery' },
     { label: 'Contact', href: '/contact' },

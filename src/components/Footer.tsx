@@ -69,8 +69,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/rentals" className="font-sans font-medium text-[16px] leading-[24px] text-[#102110] hover:text-[#7F6200] transition-colors duration-200">
-                  Jeep Rentals
+                <Link href="/contact" className="font-sans font-medium text-[16px] leading-[24px] text-[#102110] hover:text-[#7F6200] transition-colors duration-200">
+                  Contact Us
                 </Link>
               </li>
               <li>

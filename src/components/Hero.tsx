@@ -39,12 +39,16 @@ export default function Hero() {
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-          <Link
-            href="/book"
-            className="h-12 px-8 bg-[#FFB080] hover:bg-[#ffa066] text-[#7F6200] font-sans font-semibold text-[15px] rounded-full flex items-center justify-center transition-all duration-200 shadow-lg hover:shadow-orange-500/10 active:scale-95 text-center"
+          <a
+            href="#packages"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById('packages')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="h-12 px-8 bg-[#FFB080] hover:bg-[#ffa066] text-[#7F6200] font-sans font-semibold text-[15px] rounded-full flex items-center justify-center transition-all duration-200 shadow-lg hover:shadow-orange-500/10 active:scale-95 text-center cursor-pointer"
           >
             Book a Jeep
-          </Link>
+          </a>
           <Link
             href="/tracker"
             className="h-12 px-8 border border-white/30 hover:border-white/60 text-white hover:bg-white/10 font-sans font-medium text-[15px] rounded-full flex items-center justify-center transition-all duration-200 active:scale-95 text-center backdrop-blur-sm"
