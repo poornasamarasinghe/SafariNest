@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getPackageById, ALL_PACKAGES } from "@/data/safariPackages";
+import { getMergedPackage } from "@/data/safariPackages";
 import SafariHero from "@/components/safari-details/SafariHero";
 import SafariDescription from "@/components/safari-details/SafariDescription";
 import SafariEssentials from "@/components/safari-details/SafariEssentials";
@@ -8,15 +8,41 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
+export const dynamic = "force-dynamic";
+
 export async function generateStaticParams() {
-  return ALL_PACKAGES.map((pkg) => ({
-    id: pkg.id,
-  }));
+  try {
+    const res = await fetch("http://localhost:5000/api/packages");
+    if (res.ok) {
+      const data = await res.json();
+      return data.map((pkg: any) => ({
+        id: pkg.id,
+      }));
+    }
+  } catch (e) {
+    console.error("Failed to generate static params from backend", e);
+  }
+  return [
+    { id: "leopard-tracker-elite" },
+    { id: "gentle-giants-expedition" },
+    { id: "block-5-wilderness" }
+  ];
 }
 
 export default async function PackageDetailPage({ params }: PageProps) {
   const { id } = await params;
-  const pkg = getPackageById(id);
+
+  let pkg = null;
+  try {
+    const apiUrl = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/packages/${id}`;
+    const res = await fetch(apiUrl, { cache: "no-store" });
+    if (res.ok) {
+      const dbPkg = await res.json();
+      pkg = getMergedPackage(dbPkg);
+    }
+  } catch (err) {
+    console.error("Error fetching package details from backend:", err);
+  }
 
   if (!pkg) {
     notFound();
