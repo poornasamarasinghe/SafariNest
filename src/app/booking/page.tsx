@@ -40,6 +40,8 @@ function BookingContent() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [createdBooking, setCreatedBooking] = useState<any>(null);
+  const [isWaitingList, setIsWaitingList] = useState(false);
+  const [waitingListEntry, setWaitingListEntry] = useState<any>(null);
 
   // Load packages from backend on mount
   useEffect(() => {
@@ -145,6 +147,14 @@ function BookingContent() {
         throw new Error(resData.message || "Failed to submit reservation.");
       }
 
+      // If the slot was full, the backend adds us to the waiting list
+      if (resData.data?.waitingList || resData.waitingList) {
+        const entry = resData.data || resData;
+        setWaitingListEntry(entry);
+        setIsWaitingList(true);
+        return;
+      }
+
       setCreatedBooking(resData.data);
       setIsSubmitted(true);
     } catch (err: any) {
@@ -163,7 +173,67 @@ function BookingContent() {
 
         {/* Dynamic Forms Grid */}
         <div className="max-w-7xl mx-auto px-4 md:px-8 mt-12">
-          {isSubmitted ? (
+          {isWaitingList ? (
+            /* ── Waiting List Confirmation Screen ── */
+            <div className="max-w-lg mx-auto">
+              <div className="bg-white rounded-2xl border border-amber-200 shadow-sm overflow-hidden">
+                {/* Amber accent top bar */}
+                <div className="h-1.5 bg-gradient-to-r from-amber-400 to-orange-400" />
+                <div className="p-10 text-center">
+                  {/* Icon */}
+                  <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">
+                    ⏳
+                  </div>
+                  <h2 className="text-2xl font-bold text-zinc-950 mb-2">You&apos;re on the Waiting List!</h2>
+                  <p className="text-zinc-500 text-sm leading-relaxed mb-8">
+                    The slot you selected is currently fully booked. We&apos;ve placed you <strong className="text-zinc-700">first in line</strong> for this slot. You&apos;ll receive an email at{" "}
+                    <strong className="text-zinc-800">{email || waitingListEntry?.email}</strong>{" "}
+                    the moment it becomes available.
+                  </p>
+
+                  {/* Slot details */}
+                  <div className="bg-zinc-50 rounded-xl p-4 text-left text-xs mb-8 space-y-2 border border-zinc-200/60">
+                    <p className="text-zinc-400 uppercase tracking-wider font-semibold text-[10px]">Reserved Slot Details</p>
+                    <div className="h-px bg-zinc-200 my-1" />
+                    <p><strong className="text-zinc-600">Package:</strong> <span className="text-zinc-900">{waitingListEntry?.package || currentPackage.name}</span></p>
+                    <p><strong className="text-zinc-600">Date:</strong> <span className="text-zinc-900">{waitingListEntry?.date || date}</span></p>
+                    <p><strong className="text-zinc-600">Time:</strong> <span className="text-zinc-900">{waitingListEntry?.time || selectedSlot}</span></p>
+                    <p><strong className="text-zinc-600">Guests:</strong> <span className="text-zinc-900">{waitingListEntry?.guests}</span></p>
+                  </div>
+
+                  {/* What happens next */}
+                  <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-left mb-8">
+                    <p className="text-xs font-bold text-amber-800 uppercase tracking-wider mb-2">What happens next?</p>
+                    <ul className="text-xs text-amber-700 space-y-1.5 list-none">
+                      <li>📧 If the current booking is cancelled, you&apos;ll receive an email immediately</li>
+                      <li>🔗 That email will contain a link to confirm and claim your slot</li>
+                      <li>⚡ Act fast — it&apos;s first-come, first-served!</li>
+                    </ul>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      setIsWaitingList(false);
+                      setWaitingListEntry(null);
+                      setFullName("");
+                      setEmail("");
+                      setPhone("");
+                      setSpecialRequests("");
+                    }}
+                    className="border border-zinc-300 hover:border-zinc-400 text-zinc-700 font-semibold px-6 py-2.5 rounded-full text-xs tracking-wider uppercase transition-all cursor-pointer mr-3"
+                  >
+                    Try Another Date
+                  </button>
+                  <button
+                    onClick={() => window.location.href = "/"}
+                    className="bg-zinc-900 hover:bg-zinc-800 text-white font-semibold px-6 py-2.5 rounded-full text-xs tracking-wider uppercase transition-all duration-200 cursor-pointer"
+                  >
+                    Return Home
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : isSubmitted ? (
             <BookingConfirmation
               bookingId={createdBooking?.bookingId}
               fullName={createdBooking?.guest || fullName}
@@ -185,6 +255,7 @@ function BookingContent() {
               }}
             />
           ) : (
+
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               {/* Left Column: Traveler Details Form */}
               <div className="lg:col-span-7">
