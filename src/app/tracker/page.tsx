@@ -1,12 +1,22 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Sighting, INITIAL_SIGHTINGS } from "@/components/tracker-components/types";
 import TrackerHero from "@/components/tracker-components/TrackerHero";
 import SightingsSidebar from "@/components/tracker-components/SightingsSidebar";
 import TrackerMap from "@/components/tracker-components/TrackerMap";
+
+const WildlifeMap = dynamic(() => import("@/components/WildlifeMap"), {
+  ssr: false,
+  loading: () => (
+    <div style={{ height: "600px", display: "flex", alignItems: "center", justifyContent: "center", background: "#f0f4f0", borderRadius: "12px" }}>
+      <p style={{ color: "#555" }}>Loading map…</p>
+    </div>
+  ),
+});
 
 export default function TrackerPage() {
   // Filter States
@@ -16,6 +26,46 @@ export default function TrackerPage() {
 
   // Sighting Data State
   const [sightings, setSightings] = useState<Sighting[]>(INITIAL_SIGHTINGS);
+
+  // User-reported sightings from the Leaflet map
+  const [userSightings, setUserSightings] = useState<Sighting[]>([]);
+  // Each user sighting stores its creation epoch so we can compute timeAgo live
+  const [userSightingMeta, setUserSightingMeta] = useState<Record<string, number>>({});
+
+  const SIGHTING_EXPIRE_MS = 20 * 60 * 1000;
+
+  const handleSightingAdded = (s: Sighting) => {
+    const now = Date.now();
+    setUserSightings((prev) => [{ ...s, timeAgo: "just now", timestamp: 0 }, ...prev]);
+    setUserSightingMeta((prev) => ({ ...prev, [s.id]: now }));
+  };
+
+  const handleSightingRemoved = (id: string) => {
+    setUserSightings((prev) => prev.filter((s) => s.id !== id));
+    setUserSightingMeta((prev) => { const n = { ...prev }; delete n[id]; return n; });
+  };
+
+  // Tick every 30s: refresh timeAgo labels and auto-remove expired sightings
+  useEffect(() => {
+    const id = setInterval(() => {
+      const now = Date.now();
+      setUserSightings((prev) =>
+        prev
+          .filter((s) => {
+            const created = userSightingMeta[s.id];
+            return created ? now - created < SIGHTING_EXPIRE_MS : true;
+          })
+          .map((s) => {
+            const created = userSightingMeta[s.id];
+            if (!created) return s;
+            const elapsed = Math.round((now - created) / 60000);
+            return { ...s, timeAgo: elapsed === 0 ? "just now" : `${elapsed}m ago`, timestamp: elapsed };
+          })
+      );
+    }, 30_000);
+    return () => clearInterval(id);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userSightingMeta]);
 
   // Map Navigation / Zoom State
   const [zoomLevel, setZoomLevel] = useState<number>(1);
@@ -116,20 +166,16 @@ export default function TrackerPage() {
   };
 
   // Filter Sighting lists
-  const filteredSightings = sightings.filter(s => {
-    // 1. Animal Filter
+  const filteredBase = sightings.filter(s => {
     if (animalFilter !== "All" && s.animal !== animalFilter) return false;
-
-    // 2. Zone Filter
     if (zoneFilter !== "All Blocks" && s.block !== zoneFilter) return false;
-
-    // 3. Time Filter
     if (timeFilter === "1h" && s.timestamp > 60) return false;
     if (timeFilter === "3h" && s.timestamp > 180) return false;
-    // 'today' shows all initial entries (up to 6 hours)
-
     return true;
   });
+
+  // User sightings always shown at top (not subject to filters — they are real-time)
+  const filteredSightings = [...userSightings, ...filteredBase];
 
   // Dynamically calculate sidebar stats based on current visible filtered sightings
   const activeZoneText = zoneFilter !== "All Blocks" ? zoneFilter : "Block 2";
@@ -174,6 +220,17 @@ export default function TrackerPage() {
         />
 
       </main>
+
+      {/* Leaflet Wildlife Map */}
+      <section style={{ width: "100%", maxWidth: "1440px", margin: "0 auto", padding: "0 2rem 4rem" }}>
+        <h2 style={{ fontSize: "1.5rem", fontWeight: 700, marginBottom: "1rem", color: "#1a2e1a" }}>
+          🗺️ Live Wildlife Map
+        </h2>
+        <WildlifeMap
+          onSightingAdded={handleSightingAdded}
+          onSightingRemoved={handleSightingRemoved}
+        />
+      </section>
 
 
     </div>

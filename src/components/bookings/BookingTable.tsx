@@ -180,27 +180,31 @@ export default function BookingTable() {
                 <td className="px-6 py-5">
                   <div className="flex gap-4">
                     {booking.status !== "Confirmed" && (
-                      <Check
-                        size={16}
-                        onClick={() => handleUpdateStatus(booking.id, "Confirmed")}
-                        className="cursor-pointer text-green-600 hover:text-green-800 transition-colors"
+                      <button
                         title="Approve Booking"
-                      />
+                        onClick={() => handleUpdateStatus(booking.id, "Confirmed")}
+                        className="cursor-pointer text-green-600 hover:text-green-800 transition-colors bg-transparent border-none p-0"
+                      >
+                        <Check size={16} />
+                      </button>
                     )}
                     {booking.status !== "Cancelled" && (
-                      <X
-                        size={16}
-                        onClick={() => handleUpdateStatus(booking.id, "Cancelled")}
-                        className="cursor-pointer text-red-500 hover:text-red-700 transition-colors"
+                      <button
                         title="Cancel Booking"
-                      />
+                        onClick={() => handleUpdateStatus(booking.id, "Cancelled")}
+                        className="cursor-pointer text-red-500 hover:text-red-700 transition-colors bg-transparent border-none p-0"
+                      >
+                        <X size={16} />
+                      </button>
                     )}
-                    <Trash2
-                      size={16}
-                      onClick={() => handleDeleteBooking(booking.id)}
-                      className="cursor-pointer text-gray-400 hover:text-red-600 transition-colors"
+                    <button
                       title="Delete Booking"
-                    />
+                      onClick={() => handleDeleteBooking(booking.id)}
+                      className="cursor-pointer text-gray-400 hover:text-red-600 transition-colors bg-transparent border-none p-0"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+
                   </div>
                 </td>
               </tr>
