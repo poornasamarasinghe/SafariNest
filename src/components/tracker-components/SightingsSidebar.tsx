@@ -13,6 +13,21 @@ export default function SightingsSidebar({
   activeZoneText,
   totalVisibleHits,
 }: SightingsSidebarProps) {
+  // Compute most-seen animal dynamically from filteredSightings
+  const animalCounts: Record<string, number> = {};
+  const animalBlocks: Record<string, Record<string, number>> = {};
+  for (const s of filteredSightings) {
+    animalCounts[s.animal] = (animalCounts[s.animal] ?? 0) + 1;
+    if (!animalBlocks[s.animal]) animalBlocks[s.animal] = {};
+    animalBlocks[s.animal][s.block] = (animalBlocks[s.animal][s.block] ?? 0) + 1;
+  }
+  const topAnimal = Object.entries(animalCounts).sort((a, b) => b[1] - a[1])[0];
+  const topAnimalName = topAnimal?.[0] ?? "—";
+  const topAnimalCount = topAnimal?.[1] ?? 0;
+  const topBlock = topAnimal
+    ? Object.entries(animalBlocks[topAnimal[0]]).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "—"
+    : "—";
+
   return (
     <div className="lg:col-span-4 flex flex-col gap-6">
 
@@ -25,9 +40,13 @@ export default function SightingsSidebar({
             <span className="text-[9px] font-bold tracking-wider text-[#8F5C1B] uppercase block mb-1">
               Most Seen Today
             </span>
-            <h3 className="text-xl font-bold text-[#102110]">Leopard (12)</h3>
+            <h3 className="text-xl font-bold text-[#102110]">
+              {topAnimalCount > 0 ? `${topAnimalName} (${topAnimalCount})` : "No data yet"}
+            </h3>
           </div>
-          <p className="text-[11px] text-[#707070] mt-2">Primarily in Block 1</p>
+          <p className="text-[11px] text-[#707070] mt-2">
+            {topAnimalCount > 0 ? `Primarily in ${topBlock}` : "Report a sighting to begin"}
+          </p>
           <div className="absolute top-5 right-5 text-[#8F5C1B]/80">
             <Footprints className="w-5 h-5 transform rotate-45" />
           </div>

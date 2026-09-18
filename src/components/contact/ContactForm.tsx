@@ -64,7 +64,7 @@ export default function ContactForm({
                   required
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  placeholder="John Doe"
+                  placeholder="Jhon Smith"
                   className="bg-white border border-zinc-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-amber-500/50 focus:border-amber-500 text-zinc-800 font-medium placeholder-zinc-300"
                 />
               </div>
@@ -78,7 +78,7 @@ export default function ContactForm({
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="john@example.com"
+                  placeholder="john@abc.com"
                   className="bg-white border border-zinc-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-amber-500/50 focus:border-amber-500 text-zinc-800 font-medium placeholder-zinc-300"
                 />
               </div>
