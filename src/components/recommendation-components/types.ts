@@ -1,6 +1,6 @@
 // Shared types for Recommendation page components
 
-export type AnimalType = "leopard" | "elephant" | "sloth_bear";
+export type AnimalType = "leopard" | "elephant" | "sloth_bear" | "peacock" | "deer";
 export type TimeOfDay = "dawn" | "midday" | "afternoon";
 export type WeatherType = "sunny" | "rainy" | "overcast";
 export type SeasonType = "dry" | "wet";
@@ -14,4 +14,5 @@ export interface PredictionResult {
   density: "High" | "Medium" | "Low";
   vehicles: number;
   gridSector: string;
+  zoneKey?: string;
 }
