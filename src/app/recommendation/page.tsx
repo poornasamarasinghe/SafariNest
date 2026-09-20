@@ -51,7 +51,8 @@ export default function RecommendationPage() {
 
     try {
       // Send data to Node.js backend
-      const response = await axios.post("http://localhost:5000/api/ai/predict", {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      const response = await axios.post(`${apiUrl.replace(/\/api$/, '')}/api/ai/predict`, {
         animal: animal,
         time_of_day: timeOfDay,
         weather: weather,

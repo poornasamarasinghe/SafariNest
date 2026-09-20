@@ -32,7 +32,7 @@ export interface SafariPackage {
   heroBadge: string;
   descriptionTitle: string;
   descriptionParagraphs: string[];
-  analyticsCard: PackageAnalytics;
+  analyticsCard?: PackageAnalytics;
   essentials: PackageEssentials;
 }
 
@@ -58,11 +58,6 @@ export const ALL_PACKAGES: SafariPackage[] = [
       "Embark on a specialized tracking mission within the heart of Block 1, the most leopard-dense region of Yala National Park. Unlike standard safaris, our 'Leopard Prime Tracker' package is designed for the serious wildlife enthusiast. Guided by elite trackers who have spent decades deciphering the subtle signs of the savanna, you will navigate through rugged terrains and hidden watering holes where the apex predator of Sri Lanka thrives.",
       "Our custom-built luxury 4x4 vehicles provide unobstructed 360-degree views, ensuring every twitch of a tail or shimmer of a coat is captured. We utilize real-time AI-assisted wildlife sighting data to increase encounter probabilities, making this the most technologically advanced yet raw safari experience available."
     ],
-    analyticsCard: {
-      title: "Advanced Sighting Analytics",
-      text: "Our trackers are equipped with high-tech tablets featuring live sighting heatmaps, providing a 42% higher chance of leopard sightings compared to standard tours.",
-      tags: ["Live GPS Tracking", "Thermal Imaging Ready"]
-    },
     essentials: {
       duration: "6 Hours (Half Day)",
       safariType: "Private Luxury 4x4 Jeep",
@@ -96,11 +91,7 @@ export const ALL_PACKAGES: SafariPackage[] = [
       "Venture deep into the designated Elephant Corridors of Yala. This expedition is carefully timed and routed to observe the magnificent herds as they migrate between water basins. Watch matriarchs lead their families, calves playing in the mud, and massive bulls foraging in the scrub.",
       "Our eco-friendly, low-noise hybrid vehicles ensure we can approach closely without disturbing the animals, offering an intimate look at their complex social behaviors. Under the guidance of our expert naturalist guide, you will learn to read footprints and track movement."
     ],
-    analyticsCard: {
-      title: "Corridor Movement Tracker",
-      text: "Our custom satellite-linked trackers provide real-time herd telemetry, allowing us to locate grazing groups with a 90% accuracy rate while maintaining a respectful distance.",
-      tags: ["Satellite Telemetry", "Eco Hybrid Drive"]
-    },
+
     essentials: {
       duration: "Full Day",
       safariType: "Low-Noise Electric Hybrid",

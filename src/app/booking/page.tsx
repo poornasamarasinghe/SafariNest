@@ -13,12 +13,13 @@ interface SafariPackage {
   id: string;
   name: string;
   price: number;
+  duration?: string;
 }
 
 const FALLBACK_PACKAGES: SafariPackage[] = [
-  { id: "leopard-tracker-elite", name: "Leopard Tracker Elite", price: 450.00 },
-  { id: "gentle-giants-expedition", name: "Gentle Giants Expedition", price: 680.00 },
-  { id: "block-5-wilderness", name: "Block 5 Hidden Wilderness", price: 75.00 }
+  { id: "leopard-tracker-elite", name: "Leopard Tracker Elite", price: 450.00, duration: "Half Day" },
+  { id: "gentle-giants-expedition", name: "Gentle Giants Expedition", price: 680.00, duration: "Full Day" },
+  { id: "block-5-wilderness", name: "Block 5 Hidden Wilderness", price: 75.00, duration: "Full Day" }
 ];
 
 function BookingContent() {
@@ -31,7 +32,7 @@ function BookingContent() {
   const [phone, setPhone] = useState("");
   const [packages, setPackages] = useState<SafariPackage[]>(FALLBACK_PACKAGES);
   const [selectedPackageId, setSelectedPackageId] = useState("leopard-tracker-elite");
-  const [date, setDate] = useState("2024-10-24");
+  const [date, setDate] = useState(() => new Date().toISOString().split("T")[0]);
   const [timeSlot, setTimeSlot] = useState("Morning (05:30 AM - 10:00 AM)");
   const [adults, setAdults] = useState(2);
   const [childrenCount, setChildrenCount] = useState(0);
@@ -53,11 +54,14 @@ function BookingContent() {
         if (res.ok) {
           const dbData = await res.json();
           if (Array.isArray(dbData) && dbData.length > 0) {
-            const formatted = dbData.map((pkg: any) => ({
-              id: pkg.id,
-              name: pkg.name,
-              price: Number(pkg.price)
-            }));
+            const formatted = dbData
+              .filter((pkg: any) => !pkg.name.toLowerCase().includes("sorry"))
+              .map((pkg: any) => ({
+                id: pkg.id,
+                name: pkg.name,
+                price: Number(pkg.price),
+                duration: pkg.duration || ""
+              }));
             setPackages(formatted);
             // Default select the first package if no query param is there yet
             if (!pkgQueryParam) {
