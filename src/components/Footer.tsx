@@ -11,10 +11,10 @@ const navLinks = [
 ];
 
 const blocks = [
-  { label: 'Block 1', href: '/blocks/block-1' },
-  { label: 'Block 2', href: '/parks/kumana' },
-  { label: 'Block 3', href: '/corridors/elephant' },
-  { label: 'Block 4', href: '/book' },
+  { label: 'Block 1', href: '/safari' },
+  { label: 'Block 2', href: '/safari' },
+  { label: 'Block 3', href: '/safari' },
+  { label: 'Block 4', href: '/safari' },
 ];
 
 

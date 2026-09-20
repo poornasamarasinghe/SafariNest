@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronDown, Plus, Minus } from "lucide-react";
 
 interface Package {
   id: string;
   name: string;
   price: number;
+  duration?: string;
 }
 
 interface BookingFormProps {
@@ -85,6 +86,19 @@ export default function BookingForm({
   const [phoneError, setPhoneError] = useState("");
   const [emailTouched, setEmailTouched] = useState(false);
   const [phoneTouched, setPhoneTouched] = useState(false);
+
+  const selectedPackage = packages.find(p => p.id === selectedPackageId);
+  const isFullDay = selectedPackage?.duration?.toLowerCase().includes("full day")
+    || selectedPackage?.name?.toLowerCase().includes("full day")
+    || ["gentle-giants-expedition", "block-5-wilderness", "gentle-giants"].includes(selectedPackageId);
+
+  useEffect(() => {
+    if (isFullDay && timeSlot !== "Full Day (05:30 AM - 06:30 PM)") {
+      setTimeSlot("Full Day (05:30 AM - 06:30 PM)");
+    } else if (!isFullDay && timeSlot === "Full Day (05:30 AM - 06:30 PM)") {
+      setTimeSlot("Morning (05:30 AM - 10:00 AM)");
+    }
+  }, [isFullDay, timeSlot, setTimeSlot]);
 
   const handleEmailChange = (val: string) => {
     setEmail(val);
@@ -227,6 +241,7 @@ export default function BookingForm({
             </label>
             <input
               type="date"
+              min={new Date().toISOString().split("T")[0]}
               value={date}
               onChange={(e) => setDate(e.target.value)}
               className="border border-zinc-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-amber-500/50 focus:border-amber-500 text-zinc-800 font-medium bg-white cursor-pointer"
@@ -243,9 +258,14 @@ export default function BookingForm({
                 onChange={(e) => setTimeSlot(e.target.value)}
                 className="border border-zinc-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-amber-500/50 focus:border-amber-500 text-zinc-800 font-medium appearance-none w-full bg-white pr-10 cursor-pointer"
               >
-                <option>Morning (05:30 AM - 10:00 AM)</option>
-                <option>Evening (02:00 PM - 06:30 PM)</option>
-                <option>Full Day (05:30 AM - 06:30 PM)</option>
+                {isFullDay ? (
+                  <option>Full Day (05:30 AM - 06:30 PM)</option>
+                ) : (
+                  <>
+                    <option>Morning (05:30 AM - 10:00 AM)</option>
+                    <option>Evening (02:00 PM - 06:30 PM)</option>
+                  </>
+                )}
               </select>
               <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" size={16} />
             </div>

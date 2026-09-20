@@ -12,7 +12,8 @@ export const dynamic = "force-dynamic";
 
 export async function generateStaticParams() {
   try {
-    const res = await fetch("http://localhost:5000/api/packages");
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+    const res = await fetch(`${apiUrl}/packages`);
     if (res.ok) {
       const data = await res.json();
       return data.map((pkg: any) => ({
