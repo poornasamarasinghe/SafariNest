@@ -56,7 +56,7 @@ export default function ContactCards() {
             Yala Junction
           </span>
           <span className="text-zinc-900 font-extrabold text-xs max-w-50 leading-relaxed mb-1">
-            Tissamaharama Road, Palatupana, Yala, Sri Lanka
+            No80,Thanamalwila town, thanamalwila, Sri Lanka
           </span>
         </div>
       </div>

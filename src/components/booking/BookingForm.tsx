@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { ChevronDown, Plus, Minus } from "lucide-react";
 
 interface Package {
@@ -31,6 +32,33 @@ interface BookingFormProps {
   onSubmit: (e: React.FormEvent) => void;
 }
 
+// ── Validation helpers ─────────────────────────────────────────────────────
+const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z]{2,})+$/;
+
+/**
+ * Accepts:
+ *  - International with country code: +1 800 555 0100, +94771234567, +44 20 7946 0958
+ *  - Local formats: 077-123-4567, (077) 123 4567, 0771234567
+ *  - Min 7 digits (some islands/special numbers), Max 15 (E.164 standard)
+ */
+const PHONE_REGEX = /^\+?[0-9]{1,4}[\s\-.]?(?:\(?[0-9]{1,4}\)?[\s\-.]?){1,4}[0-9]{1,9}$/;
+
+function validatePhone(value: string): string {
+  const digits = value.replace(/\D/g, "");
+  if (!value.trim()) return "Phone number is required.";
+  if (digits.length < 7) return "Phone number is too short (minimum 7 digits).";
+  if (digits.length > 15) return "Phone number is too long (maximum 15 digits).";
+  if (!PHONE_REGEX.test(value.trim())) return "Enter a valid phone number (e.g. +94 77 123 4567 or +1 800 555 0100).";
+  return "";
+}
+
+function validateEmail(value: string): string {
+  if (!value.trim()) return "Email address is required.";
+  if (!EMAIL_REGEX.test(value.trim())) return "Enter a valid email address (e.g. john@example.com).";
+  return "";
+}
+// ───────────────────────────────────────────────────────────────────────────
+
 export default function BookingForm({
   fullName,
   setFullName,
@@ -53,13 +81,50 @@ export default function BookingForm({
   setSpecialRequests,
   onSubmit,
 }: BookingFormProps) {
+  const [emailError, setEmailError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [emailTouched, setEmailTouched] = useState(false);
+  const [phoneTouched, setPhoneTouched] = useState(false);
+
+  const handleEmailChange = (val: string) => {
+    setEmail(val);
+    if (emailTouched) setEmailError(validateEmail(val));
+  };
+
+  const handlePhoneChange = (val: string) => {
+    setPhone(val);
+    if (phoneTouched) setPhoneError(validatePhone(val));
+  };
+
+  const handleEmailBlur = () => {
+    setEmailTouched(true);
+    setEmailError(validateEmail(email));
+  };
+
+  const handlePhoneBlur = () => {
+    setPhoneTouched(true);
+    setPhoneError(validatePhone(phone));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    // Run full validation before submitting
+    const eErr = validateEmail(email);
+    const pErr = validatePhone(phone);
+    setEmailTouched(true);
+    setPhoneTouched(true);
+    setEmailError(eErr);
+    setPhoneError(pErr);
+    if (eErr || pErr) return; // block submission
+    onSubmit(e);
+  };
+
   return (
     <div className="bg-white rounded-xl border border-zinc-200/60 p-8 shadow-sm">
       <h2 className="text-2xl font-bold text-zinc-800 mb-8 font-sans">
         Traveler Details
       </h2>
 
-      <form className="space-y-6" onSubmit={onSubmit}>
+      <form className="space-y-6" onSubmit={handleSubmit}>
         {/* Name and Email */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="flex flex-col gap-2">
@@ -84,10 +149,23 @@ export default function BookingForm({
               type="email"
               required
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => handleEmailChange(e.target.value)}
+              onBlur={handleEmailBlur}
               placeholder="john@example.com"
-              className="border border-zinc-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-amber-500/50 focus:border-amber-500 text-zinc-800 placeholder-zinc-400 font-medium"
+              className={`border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 text-zinc-800 placeholder-zinc-400 font-medium transition-colors ${
+                emailError
+                  ? "border-red-400 focus:ring-red-400/40 focus:border-red-400 bg-red-50/40"
+                  : "border-zinc-200 focus:ring-amber-500/50 focus:border-amber-500"
+              }`}
             />
+            {emailError && (
+              <p className="text-red-500 text-[11px] font-medium flex items-center gap-1 mt-0.5">
+                <svg className="w-3 h-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+                {emailError}
+              </p>
+            )}
           </div>
         </div>
 
@@ -101,10 +179,23 @@ export default function BookingForm({
               type="tel"
               required
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={(e) => handlePhoneChange(e.target.value)}
+              onBlur={handlePhoneBlur}
               placeholder="+94 77 123 4567"
-              className="border border-zinc-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-amber-500/50 focus:border-amber-500 text-zinc-800 placeholder-zinc-400 font-medium"
+              className={`border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 text-zinc-800 placeholder-zinc-400 font-medium transition-colors ${
+                phoneError
+                  ? "border-red-400 focus:ring-red-400/40 focus:border-red-400 bg-red-50/40"
+                  : "border-zinc-200 focus:ring-amber-500/50 focus:border-amber-500"
+              }`}
             />
+            {phoneError && (
+              <p className="text-red-500 text-[11px] font-medium flex items-center gap-1 mt-0.5">
+                <svg className="w-3 h-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+                {phoneError}
+              </p>
+            )}
           </div>
 
           <div className="flex flex-col gap-2 relative">

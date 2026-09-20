@@ -15,17 +15,7 @@ export default function ContactVisuals() {
           className="object-cover group-hover:scale-105 transition-transform duration-700"
         />
         {/* Floating sighting alert badge overlay */}
-        <div className="absolute bottom-4 left-4 right-4 bg-black/25 backdrop-blur-md border border-white/10 rounded-xl p-4 flex items-center gap-3.5 text-white shadow-lg">
-          <div className="w-9 h-9 rounded-full bg-[#fca260]/90 flex items-center justify-center text-zinc-950 animate-pulse">
-            <Radio size={16} />
-          </div>
-          <div>
-            <h4 className="text-xs font-bold font-sans">Live Leopard Sighting</h4>
-            <p className="text-[10px] text-zinc-300 font-medium mt-0.5">
-              Zone 1 North • 12 mins ago
-            </p>
-          </div>
-        </div>
+
       </div>
 
       {/* Card 2: Conservation First Card */}
@@ -36,8 +26,8 @@ export default function ContactVisuals() {
             Conservation First
           </h3>
           <p className="text-xs text-zinc-450 leading-relaxed font-sans font-light">
-            Every expedition contributes directly to the Yala Wildlife Preservation Fund. 
-            We operate with zero-impact principles to ensure future generations can witness 
+            Every expedition contributes directly to the Yala Wildlife Preservation Fund.
+            We operate with zero-impact principles to ensure future generations can witness
             the same raw beauty we do today.
           </p>
         </div>

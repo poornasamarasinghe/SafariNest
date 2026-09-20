@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import dynamic from "next/dynamic";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Sighting, INITIAL_SIGHTINGS } from "@/components/tracker-components/types";
+import { Sighting } from "@/components/tracker-components/types";
 import TrackerHero from "@/components/tracker-components/TrackerHero";
 import SightingsSidebar from "@/components/tracker-components/SightingsSidebar";
 import TrackerMap from "@/components/tracker-components/TrackerMap";
@@ -18,34 +18,109 @@ const WildlifeMap = dynamic(() => import("@/components/WildlifeMap"), {
   ),
 });
 
+// NEXT_PUBLIC_API_URL is "http://localhost:5000/api" — strip trailing /api for our own path building
+const API_BASE = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api").replace(/\/api$/, "");
+const POLL_INTERVAL_MS = 30_000;
+const SIGHTING_EXPIRE_MS = 20 * 60 * 1000;
+
+// Map an API sighting record → the Sighting shape used by the sidebar / overlay map
+// We store createdAt so we can recompute elapsed minutes live at render time.
+function apiToSighting(raw: {
+  id: string;
+  animal: string;
+  emoji?: string;
+  latitude: number;
+  longitude: number;
+  block: string;
+  location: string;
+  createdAt: string | number | Date;
+}): Sighting {
+  const createdAtMs = new Date(raw.createdAt).getTime();
+  const elapsedMin = Math.round((Date.now() - createdAtMs) / 60_000);
+  const timeAgo = elapsedMin === 0 ? "just now" : `${elapsedMin}m ago`;
+
+  return {
+    id: raw.id,
+    animal: raw.animal as Sighting["animal"],
+    name: `${raw.emoji ?? ""} ${raw.animal}`.trim(),
+    timeAgo,
+    timestamp: elapsedMin,
+    createdAt: createdAtMs,
+    block: raw.block,
+    location: raw.location,
+    lat: raw.latitude,   // real GPS — Leaflet map uses these directly
+    lng: raw.longitude,
+  };
+}
+
+/** Recompute elapsed minutes from a stored createdAt epoch (used at render time). */
+function liveElapsed(createdAt: number): number {
+  return Math.max(0, Math.round((Date.now() - createdAt) / 60_000));
+}
+
+/** Start-of-today in ms (midnight local time). */
+function startOfToday(): number {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  return d.getTime();
+}
+
 export default function TrackerPage() {
   // Filter States
   const [animalFilter, setAnimalFilter] = useState<string>("All");
   const [zoneFilter, setZoneFilter] = useState<string>("All Blocks");
   const [timeFilter, setTimeFilter] = useState<string>("1h"); // '1h' | '3h' | 'today'
 
-  // Sighting Data State
-  const [sightings, setSightings] = useState<Sighting[]>(INITIAL_SIGHTINGS);
+  // ── Real sightings fetched from API (shared across all users) ──────────────
+  const [apiSightings, setApiSightings] = useState<Sighting[]>([]);
 
-  // User-reported sightings from the Leaflet map
+  // ── Optimistic user sightings (appear immediately when user marks a pin) ───
+  // These are shown at the top of the feed until the next API poll syncs them.
   const [userSightings, setUserSightings] = useState<Sighting[]>([]);
-  // Each user sighting stores its creation epoch so we can compute timeAgo live
   const [userSightingMeta, setUserSightingMeta] = useState<Record<string, number>>({});
 
-  const SIGHTING_EXPIRE_MS = 20 * 60 * 1000;
+  // ── Poll the backend for live sightings ────────────────────────────────────
+  const fetchSightings = useCallback(async () => {
+    try {
+      const res = await fetch(`${API_BASE}/api/sightings`);
+      if (!res.ok) return;
+      const raw = await res.json();
+      setApiSightings((raw as Array<Parameters<typeof apiToSighting>[0]>).map(apiToSighting));
+    } catch (err) {
+      console.warn("[TrackerPage] Could not fetch sightings:", err);
+    }
+  }, []);
 
+  useEffect(() => {
+    fetchSightings(); // initial load
+    const id = setInterval(fetchSightings, POLL_INTERVAL_MS);
+    return () => clearInterval(id);
+  }, [fetchSightings]);
+
+  // After each API poll, drop optimistic items that are now present in apiSightings
+  useEffect(() => {
+    const apiIds = new Set(apiSightings.map((s) => s.id));
+    setUserSightings((prev) => prev.filter((s) => !apiIds.has(s.id)));
+  }, [apiSightings]);
+
+  // ── Callbacks wired to WildlifeMap ─────────────────────────────────────────
   const handleSightingAdded = (s: Sighting) => {
     const now = Date.now();
+    // Keep createdAt from the sighting (set by toSighting from u.createdAt)
+    // so the live time-filter logic can recompute elapsed minutes correctly.
     setUserSightings((prev) => [{ ...s, timeAgo: "just now", timestamp: 0 }, ...prev]);
     setUserSightingMeta((prev) => ({ ...prev, [s.id]: now }));
   };
 
+
   const handleSightingRemoved = (id: string) => {
     setUserSightings((prev) => prev.filter((s) => s.id !== id));
     setUserSightingMeta((prev) => { const n = { ...prev }; delete n[id]; return n; });
+    // Also remove from apiSightings immediately so it doesn't re-appear before next poll
+    setApiSightings((prev) => prev.filter((s) => s.id !== id));
   };
 
-  // Tick every 30s: refresh timeAgo labels and auto-remove expired sightings
+  // Tick every 30 s: refresh timeAgo labels + auto-remove expired optimistic pins
   useEffect(() => {
     const id = setInterval(() => {
       const now = Date.now();
@@ -58,7 +133,7 @@ export default function TrackerPage() {
           .map((s) => {
             const created = userSightingMeta[s.id];
             if (!created) return s;
-            const elapsed = Math.round((now - created) / 60000);
+            const elapsed = Math.round((now - created) / 60_000);
             return { ...s, timeAgo: elapsed === 0 ? "just now" : `${elapsed}m ago`, timestamp: elapsed };
           })
       );
@@ -67,123 +142,49 @@ export default function TrackerPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userSightingMeta]);
 
-  // Map Navigation / Zoom State
-  const [zoomLevel, setZoomLevel] = useState<number>(1);
-  const [pan, setPan] = useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState<boolean>(false);
-  const dragStart = useRef({ x: 0, y: 0 });
+  // Map Navigation / Zoom State — handled by Leaflet internally now
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
   // Interactive Tooltip Sighting
   const [hoveredSighting, setHoveredSighting] = useState<Sighting | null>(null);
 
-  // Auto-centering effect when zone changes (simulating focus)
-  useEffect(() => {
-    if (zoneFilter === "All Blocks") {
-      setZoomLevel(1);
-      setPan({ x: 0, y: 0 });
-    } else {
-      setZoomLevel(1.5);
-      // Pan towards specific coordinates depending on the selected block
-      switch (zoneFilter) {
-        case "Block 1":
-          setPan({ x: 30, y: 40 });
-          break;
-        case "Block 2":
-          setPan({ x: 0, y: 10 });
-          break;
-        case "Block 3":
-          setPan({ x: -10, y: 80 });
-          break;
-        case "Block 4":
-          setPan({ x: 10, y: -80 });
-          break;
-        case "Block 5":
-          setPan({ x: -80, y: -40 });
-          break;
-        default:
-          setPan({ x: 0, y: 0 });
-      }
-    }
-  }, [zoneFilter]);
-
-  // Handle Drag / Pan of Map
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (zoomLevel === 1) return;
-    setIsDragging(true);
-    dragStart.current = { x: e.clientX - pan.x, y: e.clientY - pan.y };
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || zoomLevel === 1) return;
-    const newX = e.clientX - dragStart.current.x;
-    const newY = e.clientY - dragStart.current.y;
-    // Bound the pan value based on zoom
-    const bound = (zoomLevel - 1) * 200;
-    setPan({
-      x: Math.max(-bound, Math.min(bound, newX)),
-      y: Math.max(-bound, Math.min(bound, newY))
-    });
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  // Zoom helpers
-  const handleZoomIn = () => {
-    setZoomLevel(prev => Math.min(2.5, prev + 0.25));
-  };
-
-  const handleZoomOut = () => {
-    setZoomLevel(prev => {
-      const next = Math.max(1, prev - 0.25);
-      if (next === 1) setPan({ x: 0, y: 0 });
-      return next;
-    });
-  };
-
-  const handleResetLocation = () => {
-    setZoomLevel(1);
-    setPan({ x: 0, y: 0 });
-    setZoneFilter("All Blocks");
-  };
-
-  // Refresh Sighting Data (Simulation)
+  // Manual refresh — re-fetch from API immediately
   const handleRefreshMap = () => {
     setIsRefreshing(true);
-    setTimeout(() => {
-      setIsRefreshing(false);
-      // Randomly adjust marker positions slightly to simulate real-time updating
-      setSightings(prev =>
-        prev.map(s => ({
-          ...s,
-          lat: Math.max(15, Math.min(85, s.lat + (Math.random() - 0.5) * 4)),
-          lng: Math.max(15, Math.min(85, s.lng + (Math.random() - 0.5) * 4))
-        }))
-      );
-    }, 1000);
+    fetchSightings().finally(() => {
+      setTimeout(() => setIsRefreshing(false), 800);
+    });
   };
 
-  // Filter Sighting lists
-  const filteredBase = sightings.filter(s => {
-    if (animalFilter !== "All" && s.animal !== animalFilter) return false;
-    if (zoneFilter !== "All Blocks" && s.block !== zoneFilter) return false;
-    if (timeFilter === "1h" && s.timestamp > 60) return false;
-    if (timeFilter === "3h" && s.timestamp > 180) return false;
-    return true;
-  });
+  // ── Filter sightings for display ───────────────────────────────────────────
+  // Re-derive elapsed minutes live (from stored createdAt) so time filters stay
+  // accurate even if the sightings were fetched many minutes ago.
+  const todayStart = startOfToday();
 
-  // User sightings always shown at top (not subject to filters — they are real-time)
+  const filteredBase = apiSightings
+    .map((s) => {
+      const elapsed = liveElapsed(s.createdAt);
+      const timeAgo = elapsed === 0 ? "just now" : `${elapsed}m ago`;
+      return { ...s, timestamp: elapsed, timeAgo };
+    })
+    .filter((s) => {
+      if (animalFilter !== "All" && s.animal !== animalFilter) return false;
+      if (zoneFilter !== "All Blocks" && s.block !== zoneFilter) return false;
+      if (timeFilter === "1h" && s.timestamp > 60) return false;
+      if (timeFilter === "3h" && s.timestamp > 180) return false;
+      // "today" — keep sightings created after midnight local time
+      if (timeFilter === "today" && s.createdAt < todayStart) return false;
+      return true;
+    });
+
+  // Optimistic user sightings always shown at top (unfiltered — they are real-time)
   const filteredSightings = [...userSightings, ...filteredBase];
 
-  // Dynamically calculate sidebar stats based on current visible filtered sightings
   const activeZoneText = zoneFilter !== "All Blocks" ? zoneFilter : "Block 2";
   const totalVisibleHits = filteredSightings.length;
 
   return (
     <div className="flex-1 bg-[#FAF9F5] text-stone-900 font-sans min-h-screen flex flex-col">
-
 
       <TrackerHero />
 
@@ -200,15 +201,6 @@ export default function TrackerPage() {
           filteredSightings={filteredSightings}
           hoveredSighting={hoveredSighting}
           setHoveredSighting={setHoveredSighting}
-          zoomLevel={zoomLevel}
-          pan={pan}
-          isDragging={isDragging}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onZoomIn={handleZoomIn}
-          onZoomOut={handleZoomOut}
-          onResetLocation={handleResetLocation}
           animalFilter={animalFilter}
           setAnimalFilter={setAnimalFilter}
           zoneFilter={zoneFilter}
@@ -231,7 +223,6 @@ export default function TrackerPage() {
           onSightingRemoved={handleSightingRemoved}
         />
       </section>
-
 
     </div>
   );

@@ -7,6 +7,8 @@ import "leaflet/dist/leaflet.css";
 import { Sighting } from "./tracker-components/types";
 
 const EXPIRE_MS = 20 * 60 * 1000;
+// NEXT_PUBLIC_API_URL is "http://localhost:5000/api" — we need the base without path segments
+const API_BASE = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api").replace(/\/api$/, "");
 const YALA_CENTER: [number, number] = [6.3725, 81.5185];
 
 const ANIMALS = [
@@ -177,20 +179,21 @@ function gpsToBlock(lat: number, lng: number): string {
 
 function toSighting(u: UserSighting): Sighting {
     const elapsed = Math.round((Date.now() - u.createdAt) / 60000);
-    const pos = gpsToPercent(u.latlng.lat, u.latlng.lng);
     const block = gpsToBlock(u.latlng.lat, u.latlng.lng);
     return {
         id: u.id,
-        animal: (["Leopard", "Elephant", "Sloth Bear", "Birds"].includes(u.animal) ? u.animal : "Birds") as Sighting["animal"],
+        animal: u.animal as Sighting["animal"],
         name: `${u.emoji} ${u.animal}`,
         timeAgo: elapsed === 0 ? "just now" : `${elapsed}m ago`,
         timestamp: elapsed,
+        createdAt: u.createdAt, // pass through so time filters stay accurate
         block,
         location: `${u.latlng.lat.toFixed(4)}°N ${u.latlng.lng.toFixed(4)}°E`,
-        lat: pos.lat,
-        lng: pos.lng,
+        lat: u.latlng.lat,  // real GPS — TrackerLeafletMap uses these directly
+        lng: u.latlng.lng,
     };
 }
+
 
 // ── Haversine distance in metres between two lat/lng points ───────────────────
 function haversineM(lat1: number, lng1: number, lat2: number, lng2: number): number {
@@ -383,10 +386,13 @@ export default function WildlifeMap({ onSightingAdded, onSightingRemoved }: Wild
         );
     }, []);
 
-    const handleAnimalSelect = (a: AnimalOption) => {
+    const handleAnimalSelect = async (a: AnimalOption) => {
         if (!pendingCoords || !myPosition) return;
+
+        // Build the local sighting object immediately (optimistic UI)
+        const optimisticId = `u-${Date.now()}`;
         const newSighting: UserSighting = {
-            id: `u-${Date.now()}`,
+            id: optimisticId,
             latlng: myPosition,
             animal: a.key,
             emoji: a.emoji,
@@ -397,11 +403,47 @@ export default function WildlifeMap({ onSightingAdded, onSightingRemoved }: Wild
         setSightings((prev) => [...prev, newSighting]);
         onSightingAdded?.(toSighting(newSighting));
         setPendingCoords(null);
+
+        // Persist to backend (fire-and-forget, non-blocking)
+        try {
+            const body = {
+                animal: a.key,
+                emoji: a.emoji,
+                color: a.color,
+                latitude: myPosition.lat,
+                longitude: myPosition.lng,
+                block: gpsToBlock(myPosition.lat, myPosition.lng),
+                location: `${myPosition.lat.toFixed(4)}°N ${myPosition.lng.toFixed(4)}°E`,
+            };
+            const res = await fetch(`${API_BASE}/api/sightings`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body),
+            });
+            if (res.ok) {
+                const saved = await res.json();
+                // Swap the optimistic id with the real Firestore id
+                setSightings((prev) =>
+                    prev.map((s) => (s.id === optimisticId ? { ...s, id: saved.id } : s))
+                );
+            }
+        } catch (err) {
+            console.warn("[WildlifeMap] Failed to persist sighting to API:", err);
+            // Sighting still lives in local state — no disruption to the user
+        }
     };
 
-    const handleDelete = useCallback((id: string) => {
+    const handleDelete = useCallback(async (id: string) => {
+        // Optimistic local removal
         setSightings((prev) => prev.filter((s) => s.id !== id));
         onSightingRemoved?.(id);
+
+        // Persist deletion to backend
+        try {
+            await fetch(`${API_BASE}/api/sightings/${id}`, { method: "DELETE" });
+        } catch (err) {
+            console.warn("[WildlifeMap] Failed to delete sighting from API:", err);
+        }
     }, [onSightingRemoved]);
 
     const activePins = sightings.filter((s) => Date.now() - s.createdAt < EXPIRE_MS).length;

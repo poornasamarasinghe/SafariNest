@@ -1,6 +1,7 @@
 "use client";
 
-import { Globe, Calendar, Users } from "lucide-react";
+import { Globe, Calendar, Users, TrendingUp } from "lucide-react";
+import { useLkrRate } from "@/hooks/useLkrRate";
 
 interface BookingSummaryProps {
   packageName: string;
@@ -29,6 +30,9 @@ export default function BookingSummary({
   formatDate,
   onSubmit,
 }: BookingSummaryProps) {
+  const { rate, loading, lastUpdated } = useLkrRate();
+
+  const lkrTotal = rate ? totalAmount * rate : null;
   return (
     <div className="bg-[#101b15] text-white rounded-xl p-8 shadow-sm">
       <h3 className="text-xl font-bold mb-6 font-sans">Summary</h3>
@@ -85,10 +89,34 @@ export default function BookingSummary({
       <div className="border-t border-zinc-800 my-6"></div>
 
       {/* Total */}
-      <div className="flex justify-between items-baseline mb-6">
+      <div className="flex justify-between items-baseline mb-2">
         <span className="text-base font-bold">Total</span>
         <span className="text-3xl font-extrabold text-[#fba260] font-mono">${totalAmount.toFixed(2)}</span>
       </div>
+
+      {/* LKR Equivalent */}
+      <div className="flex justify-between items-center mb-6">
+        <span className="text-[10px] text-zinc-500 uppercase tracking-wider">≈ Sri Lankan Rupees</span>
+        {loading ? (
+          <span className="h-4 w-28 bg-zinc-700 rounded animate-pulse inline-block" />
+        ) : lkrTotal ? (
+          <span className="text-base font-bold text-emerald-400 font-mono">
+            LKR {lkrTotal.toLocaleString("en-LK", { maximumFractionDigits: 0 })}
+          </span>
+        ) : null}
+      </div>
+
+      {/* Live Rate Badge */}
+      {!loading && rate && (
+        <div className="flex items-center gap-1.5 bg-zinc-800/60 border border-zinc-700/50 rounded-lg px-3 py-2 mb-6">
+          <TrendingUp size={11} className="text-emerald-400 flex-shrink-0" />
+          <p className="text-[10px] text-zinc-400 leading-tight">
+            <span className="text-emerald-400 font-semibold">1 USD = {rate.toFixed(2)} LKR</span>
+            {" · "}
+            <span>Updated: {lastUpdated}</span>
+          </p>
+        </div>
+      )}
 
       {/* Action */}
       <button

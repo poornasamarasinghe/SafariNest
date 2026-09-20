@@ -57,10 +57,12 @@ export default function Home() {
   ]);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchPackages = async () => {
       try {
         const apiUrl = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/packages`;
-        const res = await fetch(apiUrl);
+        const res = await fetch(apiUrl, { signal: controller.signal });
         if (res.ok) {
           const data = await res.json();
           const formatted = data.map((pkg: any) => {
@@ -88,11 +90,17 @@ export default function Home() {
             setPackages(formatted.slice(0, 2));
           }
         }
-      } catch (err) {
-        console.error("Failed to fetch packages on homepage:", err);
+      } catch (err: any) {
+        // Ignore intentional abort errors (React StrictMode / component unmount)
+        if (err?.name !== 'AbortError') {
+          console.error("Failed to fetch packages on homepage:", err);
+        }
       }
     };
+
     fetchPackages();
+
+    return () => controller.abort();
   }, []);
 
   return (

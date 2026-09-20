@@ -97,7 +97,7 @@ export default function Hero() {
             href="/tracker"
             className="h-12 px-8 border border-white/30 hover:border-white/70 text-white hover:bg-white/10 font-sans font-medium text-[15px] rounded-full flex items-center justify-center transition-all duration-200 active:scale-95 text-center backdrop-blur-sm"
           >
-            Animal Tracker
+            Live Tracker
           </Link>
         </div>
 

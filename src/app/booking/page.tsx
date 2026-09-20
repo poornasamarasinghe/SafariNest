@@ -45,10 +45,11 @@ function BookingContent() {
 
   // Load packages from backend on mount
   useEffect(() => {
+    const controller = new AbortController();
     const fetchPackages = async () => {
       try {
         const apiUrl = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/packages`;
-        const res = await fetch(apiUrl);
+        const res = await fetch(apiUrl, { signal: controller.signal });
         if (res.ok) {
           const dbData = await res.json();
           if (Array.isArray(dbData) && dbData.length > 0) {
@@ -64,11 +65,14 @@ function BookingContent() {
             }
           }
         }
-      } catch (err) {
-        console.error("Failed to fetch backend packages, using fallback data", err);
+      } catch (err: any) {
+        if (err?.name !== 'AbortError') {
+          console.error("Failed to fetch backend packages, using fallback data", err);
+        }
       }
     };
     fetchPackages();
+    return () => controller.abort();
   }, [pkgQueryParam]);
 
   // Handle URL query parameter pre-selection
@@ -89,13 +93,13 @@ function BookingContent() {
 
   // Derive package info
   const currentPackage = packages.find(p => p.id === selectedPackageId) || packages[0] || FALLBACK_PACKAGES[0];
-  
+
   // Calculate price components
   const basePrice = currentPackage.price;
   const guestCount = adults + childrenCount;
   const conservationFeeRate = 25.00; // $25 per guest
   const conservationFees = guestCount * conservationFeeRate;
-  
+
   const subtotal = basePrice + conservationFees;
   const taxRate = 0.10; // 10% Taxes & Service Charge
   const taxesAndService = subtotal * taxRate;
@@ -114,9 +118,9 @@ function BookingContent() {
 
   const handleConfirmReservation = async (e: React.FormEvent) => {
     if (e) e.preventDefault();
+    // Note: phone/email field-level validation is handled by BookingForm before this is called
     if (!fullName || !email || !phone) {
-      alert("Please fill out all required traveler details (Name, Email, Phone).");
-      return;
+      return; // BookingForm already shows inline errors
     }
 
     setIsSubmitting(true);
@@ -286,10 +290,7 @@ function BookingContent() {
               {/* Right Column: Live Slots + Pricing Summary */}
               <div className="lg:col-span-5 space-y-6">
                 {/* Live Availability Card */}
-                <LiveAvailability
-                  selectedSlot={selectedSlot}
-                  setSelectedSlot={setSelectedSlot}
-                />
+
 
                 {/* Summary Card */}
                 <BookingSummary

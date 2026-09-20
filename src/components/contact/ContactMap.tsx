@@ -20,11 +20,11 @@ export default function ContactMap() {
             <Compass size={18} className="animate-spin-slow" />
           </div>
           <h4 className="font-extrabold text-sm text-zinc-900 font-sans">YalaWild Basecamp</h4>
-          <p className="text-[10px] text-zinc-500 font-semibold mt-1">Gate 1, Palatupana</p>
-          
-          <a 
-            href="https://maps.google.com" 
-            target="_blank" 
+          <p className="text-[10px] text-zinc-500 font-semibold mt-1">No80,Thanamalwila town, thanamalwila, Sri Lanka</p>
+
+          <a
+            href="https://www.google.com/maps/search/?api=1&query=No80+Thanamalwila+town+thanamalwila+Sri+Lanka"
+            target="_blank"
             rel="noopener noreferrer"
             className="mt-4 flex items-center gap-1.5 text-[10px] font-extrabold text-[#9b591b] hover:text-[#804814] uppercase tracking-wider border-t border-zinc-100 pt-3.5 w-full justify-center transition-colors cursor-pointer"
           >
