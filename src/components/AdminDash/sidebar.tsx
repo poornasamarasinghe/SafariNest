@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import {
   LayoutDashboard,
@@ -10,11 +10,12 @@ import {
   Image,
   Eye,
   X,
-  Menu,
+  LogOut,
 } from "lucide-react";
+import { clearSession } from "@/lib/adminAuth";
 
 const menuItems = [
-  { name: "Overview", icon: LayoutDashboard, path: "/admin" },
+  { name: "Overview", icon: LayoutDashboard, path: "/admin/overview" },
   { name: "Bookings", icon: BookOpen, path: "/admin/bookings" },
   { name: "Packages", icon: Package, path: "/admin/packages" },
   { name: "Gallery", icon: Image, path: "/admin/gallery" },
@@ -27,12 +28,18 @@ interface SidebarProps {
 
 export default function Sidebar({ open, onClose }: SidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
 
   // Close drawer on route change (mobile)
   useEffect(() => {
     if (onClose) onClose();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
+
+  const handleLogout = () => {
+    clearSession();
+    router.push("/admin/login");
+  };
 
   const content = (
     <aside className="h-full w-[220px] bg-[#0d1a0d] flex flex-col border-r border-white/8">
@@ -95,17 +102,18 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
         </div>
       </div>
 
-      {/* User */}
+      {/* Logout button */}
       <div className="px-3 pb-4">
-        <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 transition-colors duration-200 cursor-pointer">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#FFB080] to-[#e8873a] flex items-center justify-center flex-shrink-0">
-            <span className="font-jetbrains font-bold text-[10px] text-[#7F3300]">AD</span>
-          </div>
-          <div className="flex flex-col min-w-0">
-            <p className="font-sans text-[12px] font-semibold text-white/80 leading-none truncate">Admin</p>
-            <p className="font-jetbrains text-[10px] text-white/30 mt-0.5">SuperUser</p>
-          </div>
-        </div>
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-sans font-medium text-white/40 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 group"
+        >
+          <LogOut
+            size={15}
+            className="flex-shrink-0 text-white/30 group-hover:text-red-400 transition-colors duration-200"
+          />
+          Sign Out
+        </button>
       </div>
     </aside>
   );

@@ -42,6 +42,7 @@ export default function Header() {
   const navLinks = [
     { label: 'Home', href: '/' },
     { label: 'Live Tracker', href: '/tracker' },
+    { label: 'AI Picks', href: '/recommendation' },
     { label: 'Gallery', href: '/gallery' },
     { label: 'Contact', href: '/contact' },
   ];

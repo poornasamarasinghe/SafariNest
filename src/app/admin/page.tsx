@@ -1,15 +1,23 @@
 "use client";
 
-import AdminShell from "../../components/AdminDash/AdminShell";
-import DashboardContent from "../../components/AdminDash/DashboardContent";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { isSessionValid } from "@/lib/adminAuth";
 
-export default function AdminPage() {
-  return (
-    <AdminShell
-      title="Operations Overview"
-      subtitle="Monitor bookings, sightings, and safari package performance in real time."
-    >
-      <DashboardContent />
-    </AdminShell>
-  );
+/**
+ * /admin root — redirect to overview if authenticated with a valid session,
+ * otherwise send to login. Real content lives at /admin/overview.
+ */
+export default function AdminRootPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isSessionValid()) {
+      router.replace("/admin/overview");
+    } else {
+      router.replace("/admin/login");
+    }
+  }, [router]);
+
+  return null;
 }
