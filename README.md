@@ -1,36 +1,136 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🦁 SafariNest
+### AI-Powered Safari Booking & Wildlife Monitoring Platform
 
-## Getting Started
+SafariNest is a web-based safari management platform designed to improve wildlife tourism through intelligent booking management, GPS-based wildlife reporting, and geographical wildlife insights.
 
-First, run the development server:
+The platform connects safari visitors and guides with a digital environment where they can explore safari experiences, make bookings, and contribute to wildlife observation data.
+
+## ✨ Key Features
+
+### 🗺️ Interactive Wildlife Map
+- GPS-based wildlife sighting reporting.
+- Interactive geographical map.
+- Wildlife sighting visualization.
+- Wildlife filtering based on animal types.
+- Identification of wildlife sighting hotspots.
+
+### 📅 Safari Booking Interface
+- Full-day and half-day safari packages.
+- Online booking form.
+- Date and time-slot selection.
+- Adult and child passenger details.
+- Special booking requests.
+- Booking availability information.
+
+### 🤖 Wildlife Insights
+- Geographical visualization of wildlife sightings.
+- Wildlife hotspot identification.
+- Location-based wildlife insights.
+- Support for data-driven wildlife monitoring.
+
+### 📱 Responsive User Interface
+- Modern and responsive design.
+- User-friendly navigation.
+- Interactive components.
+- Mobile-friendly layouts.
+
+## 🛠️ Technologies Used
+
+| Technology | Purpose |
+|---|---|
+| Next.js 16 | React framework |
+| React 19 | UI development |
+| TypeScript | Type-safe development |
+| Tailwind CSS 4 | Styling |
+| Leaflet.js | Interactive maps |
+| React Leaflet | React map integration |
+| Axios | API communication |
+| Lucide React | Icons |
+| React Dropzone | File upload interface |
+
+## 🏗️ System Architecture
+
+SafariNest follows a frontend-backend architecture.
+
+**Frontend:**
+- Handles user interactions.
+- Displays safari packages and booking interfaces.
+- Provides interactive wildlife maps.
+- Communicates with backend APIs.
+
+**Backend:**
+- Handles booking operations.
+- Manages wildlife sighting data.
+- Processes application requests.
+- Communicates with Firebase Firestore.
+
+## 📂 Project Structure
+
+```text
+SafariNest/
+│
+├── public/
+│
+├── src/
+│
+├── .gitignore
+├── package.json
+├── package-lock.json
+├── next.config.ts
+├── tsconfig.json
+└── README.md
+```
+
+## ⚙️ Getting Started
+
+### Prerequisites
+
+- Node.js
+- npm
+- Git
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/poornasamarasinghe/SafariNest.git
+```
+
+### 2. Navigate to the project
+
+```bash
+cd SafariNest
+```
+
+### 3. Install dependencies
+
+```bash
+npm install
+```
+
+### 4. Start the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 5. Open the application
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Visit:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```text
+http://localhost:3000
+```
 
-## Learn More
+## 🔗 Related Repository
 
-To learn more about Next.js, take a look at the following resources:
+**Backend:** Safarinest-Backend
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🎯 Project Objective
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The main objective of SafariNest is to combine digital safari booking management with geographical wildlife observation, providing a more organized and data-driven approach to wildlife tourism.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Developed by:** Poorna Samarasinghe
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Project:** SafariNest – AI-Powered Safari Booking & Wildlife Monitoring Platform
